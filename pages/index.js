@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -24,7 +24,7 @@ import Popover from '@material-ui/core/Popover';
 import Box from '@material-ui/core/Box';
 import { spacing } from '@material-ui/system';
 import AccountListItem from '../components/accountListItem';
-
+import AccountPage from '../components/accountPage';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -97,48 +97,47 @@ const useStyles = makeStyles((theme) => ({
 export default function Index() {
   const classes = useStyles();
   const theme = useTheme();
+  //drawer state
   const [open, setOpen] = React.useState(false);
-  const [anchorDelete, setAnchorDelete] = React.useState(null);
-  const [accounts, setAccounts] = React.useState([{ accName: "Default", id: 1, expenses: [
-                                                  { expName: "Lunch", date: "9/24", description: "McDonalds", amount: 6.00} ]}
-                                                ]);
-  const [view, setView] = React.useState('home');
-  const [accId, setAccId] = React.useState(2);
-
-  const deleteOpen = Boolean(anchorDelete);
   const handleDrawerToggle = () => {
     setOpen(prevOpen => !prevOpen);
   };
 
-  const handleOpenDelete = (event) => {
-    event.preventDefault();
-    setAnchorDelete(event.currentTarget);
-  }
-  const handleCloseDelete = () => {
-    setAnchorDelete(null);
-  }
-  const handleSaveEdit = () => {
+  const [accounts, setAccounts] = React.useState([{ accName: "Default", id: 1, expenses: [
+                                                  { expName: "Lunch", date: "9/24", description: "McDonalds", amount: 6.00} ]}
+                                                ]);
+  const [accId, setAccId] = React.useState(2);
+  const [view, setView] = React.useState('home');
 
+  const [focusId, setFocusId] = React.useState(null);
+
+  const clearFocus = () => {
+    setFocusId(null);
+  }
+  const setFocus = (id) => {
+    setFocusId(id);
+  }
+
+  const refreshSide = () => {
+    setAccounts(prevAccounts=>prevAccounts);
+    console.log("refreshing")
   }
 
   const addAccount = () => {
     setAccounts(prevAccounts => prevAccounts.concat([{
       accName: "New Account", id: accId, expenses: []
-    }]));
+    }]))
     setAccId(prevAccId => prevAccId + 1);
   }
 
-  const deleteAccount = (event) => {
+  const deleteAccount = (id) => {
     setView("home");
-    handleCloseDelete();
-    console.log(event.target.parentNode.parentNode)
-    // setAccounts(prevAccounts => {
-    //   const deleteIndex = prevAccounts.findIndex((account) => account.id === id);
-    //   console.log(id, prevAccounts[deleteIndex])
+    setAccounts(prevAccounts => {
+      const deleteIndex = prevAccounts.findIndex((account) => account.id === id);
+      prevAccounts.splice(deleteIndex, 1);
+      return [...prevAccounts];
+    })
 
-    //   prevAccounts.splice(deleteIndex, 1);
-    //   return prevAccounts;
-    // })
   }
 
 
@@ -151,6 +150,8 @@ export default function Index() {
         return prevAccounts;
     })
   }
+
+  useEffect(()=>{refreshSide()})
 
   return (
     <>
@@ -193,7 +194,12 @@ export default function Index() {
             </IconButton>
           </div>
           <Divider />
-          <Button onClick={()=>addAccount()} className={classes.addAccButton} variant="outlined" color="primary" endIcon={<AddCircleIcon/>}>
+          <Button
+            onClick={()=>addAccount()}
+            className={classes.addAccButton}
+            variant="outlined"
+            color="primary"
+            endIcon={<AddCircleIcon/>}>
             Add Account
           </Button>
           <List>
@@ -201,11 +207,7 @@ export default function Index() {
               <AccountListItem
                key={account.id}
                account = {account}
-               handleOpenDelete = {handleOpenDelete}
-               deleteOpen = {deleteOpen}
-               anchorDelete = {anchorDelete}
-               handleCloseDelete = {handleCloseDelete}
-               deleteAccount = {deleteAccount}
+               deleteAccount={deleteAccount}
                 />
             ))}
           </List>
@@ -218,9 +220,9 @@ export default function Index() {
           })}
         >
           <div className={classes.drawerHeader} />
-          <Typography paragraph>
-            placeholder
-          </Typography>
+          {<AccountPage
+
+          /> && view!=="home"}
 
         </main>
       </div>

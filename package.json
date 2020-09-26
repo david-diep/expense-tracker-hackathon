@@ -16,5 +16,8 @@
     "build": "next build",
     "start": "next start",
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest"
+  },
+  "devDependencies": {
+    "eslint-plugin-react": "^7.21.2"
   }
 }

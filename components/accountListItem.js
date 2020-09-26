@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -32,20 +32,31 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AccountListItem(props) {
   const classes = useStyles();
-  const idFirm = JSON.parse(JSON.stringify({id:props.account.id}));
+
+  const [anchorDelete, setAnchorDelete] = React.useState(null);
+  const deleteOpen = Boolean(anchorDelete);
+
+  const handleOpenDelete = (event) => {
+    event.persist()
+    setAnchorDelete(event.currentTarget);
+  }
+
+  const handleCloseDelete = () => {
+    setAnchorDelete(null);
+  }
 
   return (
-    <ListItem onClick={() => console.log(props.account.id,' primary pressed',idFirm.id)} button>
+    <ListItem onClick={() => console.log(props.account.id)} button>
       <ListItemText primary={props.account.accName} />
       <ListItemSecondaryAction>
-        <IconButton aria-label="delete" onClick={(event) => props.handleOpenDelete(event)}>
+        <IconButton aria-label="delete" onClick={(event) => {handleOpenDelete(event)}}>
           <DeleteIcon />
         </IconButton>
         <Popover
-          id={props.account.id}
-          open={props.deleteOpen}
-          anchorEl={props.anchorDelete}
-          onClose={props.handleCloseDelete}
+
+          open={deleteOpen}
+          anchorEl={anchorDelete}
+          onClose={handleCloseDelete}
 
           anchorOrigin={{
             vertical: 'bottom',
@@ -68,8 +79,7 @@ export default function AccountListItem(props) {
             <Button variant="contained" color="secondary" style={{
               marginTop: '5px', background: '#FF0000'
             }}
-
-              onClick={() => {console.log(idFirm, "testing")}}
+              onClick={() => { handleCloseDelete(); props.deleteAccount(props.account.id);}}
             >
               Delete
             </Button>
