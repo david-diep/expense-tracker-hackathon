@@ -1,6 +1,5 @@
 import React from 'react';
 import clsx from 'clsx';
-import Head from 'next/head'
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -24,6 +23,7 @@ import Button from '@material-ui/core/Button';
 import Popover from '@material-ui/core/Popover';
 import Box from '@material-ui/core/Box';
 import { spacing } from '@material-ui/system';
+import AccountListItem from '../components/accountListItem';
 
 const drawerWidth = 240;
 
@@ -106,16 +106,12 @@ export default function Index() {
   const [accId, setAccId] = React.useState(2);
 
   const deleteOpen = Boolean(anchorDelete);
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleDrawerToggle = () => {
+    setOpen(prevOpen => !prevOpen);
   };
 
   const handleOpenDelete = (event) => {
-    event.persist();
+    event.preventDefault();
     setAnchorDelete(event.currentTarget);
   }
   const handleCloseDelete = () => {
@@ -127,19 +123,22 @@ export default function Index() {
 
   const addAccount = () => {
     setAccounts(prevAccounts => prevAccounts.concat([{
-      accName: "Default", id: accId, expenses: []
+      accName: "New Account", id: accId, expenses: []
     }]));
     setAccId(prevAccId => prevAccId + 1);
   }
 
-  const deleteAccount = (id) => {
+  const deleteAccount = (event) => {
     setView("home");
     handleCloseDelete();
-    setAccounts(prevAccounts => {
-      const deleteIndex = prevAccounts.findIndex((account) => account.id === id);
-      prevAccounts.splice(deleteIndex, 1);
-      return prevAccounts;
-    })
+    console.log(event.target.parentNode.parentNode)
+    // setAccounts(prevAccounts => {
+    //   const deleteIndex = prevAccounts.findIndex((account) => account.id === id);
+    //   console.log(id, prevAccounts[deleteIndex])
+
+    //   prevAccounts.splice(deleteIndex, 1);
+    //   return prevAccounts;
+    // })
   }
 
 
@@ -168,7 +167,7 @@ export default function Index() {
             <IconButton
               color="inherit"
               aria-label="open drawer"
-              onClick={handleDrawerOpen}
+              onClick={handleDrawerToggle}
               edge="start"
               className={clsx(classes.menuButton, open && classes.hide)}
             >
@@ -189,7 +188,7 @@ export default function Index() {
           }}
         >
           <div className={classes.drawerHeader}>
-            <IconButton onClick={handleDrawerClose}>
+            <IconButton onClick={handleDrawerToggle}>
               {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
             </IconButton>
           </div>
@@ -199,49 +198,15 @@ export default function Index() {
           </Button>
           <List>
             {accounts.map((account) => (
-              <ListItem onClick={()=>console.log('primary pressed')} button key={account.id}>
-                <ListItemText primary={account.accName} />
-                <ListItemSecondaryAction>
-                  <IconButton aria-label="delete" onClick={(event) => handleOpenDelete(event)}>
-                    <DeleteIcon />
-                  </IconButton>
-                  <Popover
-                    id={account.id}
-                    open={deleteOpen}
-                    anchorEl={anchorDelete}
-                    onClose={handleCloseDelete}
-
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'center',
-                    }}
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'center',
-                    }}
-                  >
-                    <Box
-                      className={classes.deletePopover}
-                      display="flex"
-                      alignItems="center"
-                      flexDirection="column"
-                      >
-                        <Typography align="center">
-                          Are you sure you want to delete account: {account.accName}?
-                        </Typography>
-                        <Button variant="contained" color="secondary" style={{
-                          marginTop: '5px', background: '#FF0000'
-                          }}
-                          onClick={()=>deleteAccount(account.id)}
-                          >
-                          Delete
-                        </Button>
-                    </Box>
-                  </Popover>
-
-                </ListItemSecondaryAction>
-
-              </ListItem>
+              <AccountListItem
+               key={account.id}
+               account = {account}
+               handleOpenDelete = {handleOpenDelete}
+               deleteOpen = {deleteOpen}
+               anchorDelete = {anchorDelete}
+               handleCloseDelete = {handleCloseDelete}
+               deleteAccount = {deleteAccount}
+                />
             ))}
           </List>
 
