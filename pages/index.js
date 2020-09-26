@@ -22,7 +22,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CreateIcon from '@material-ui/icons/Create';
 import Button from '@material-ui/core/Button';
 import Popover from '@material-ui/core/Popover';
-
+import Box from '@material-ui/core/Box';
+import { spacing } from '@material-ui/system';
 
 const drawerWidth = 240;
 
@@ -85,8 +86,11 @@ const useStyles = makeStyles((theme) => ({
   addAccButton:{
     width:'93%',
     margin: '5px auto 5px auto'
-  }, editPopover:{
-    padding: 2
+  },
+  deletePopover: {
+    padding: '.3rem',
+    border: '1px solid black',
+    width: '240px'
   },
 }));
 
@@ -94,13 +98,14 @@ export default function Index() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [anchorEdit, setAnchorEdit] = React.useState(null);
+  const [anchorDelete, setAnchorDelete] = React.useState(null);
   const [accounts, setAccounts] = React.useState([{ accName: "Default", id: 1, expenses: [
                                                   { expName: "Lunch", date: "9/24", description: "McDonalds", amount: 6.00} ]}
                                                 ]);
   const [view, setView] = React.useState('home');
   const [accId, setAccId] = React.useState(2);
 
+  const deleteOpen = Boolean(anchorDelete);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -109,12 +114,12 @@ export default function Index() {
     setOpen(false);
   };
 
-  const handleOpenEdit = (event) => {
+  const handleOpenDelete = (event) => {
     event.persist();
-    setAnchorEdit(event.currentTarget);
+    setAnchorDelete(event.currentTarget);
   }
-  const handleCloseEdit = () => {
-    setAnchorEdit(null);
+  const handleCloseDelete = () => {
+    setAnchorDelete(null);
   }
   const handleSaveEdit = () => {
 
@@ -127,7 +132,17 @@ export default function Index() {
     setAccId(prevAccId => prevAccId + 1);
   }
 
-  const editOpen = Boolean(anchorEdit);
+  const deleteAccount = (id) => {
+    setView("home");
+    handleCloseDelete();
+    setAccounts(prevAccounts => {
+      const deleteIndex = prevAccounts.findIndex((account) => account.id === id);
+      prevAccounts.splice(deleteIndex, 1);
+      return prevAccounts;
+    })
+  }
+
+
   const onEditChange = (value, id) => {
       setAccounts((prevAccounts)=>{
         const changeIndex=prevAccounts.findIndex((account)=>account.id===id);
@@ -187,15 +202,15 @@ export default function Index() {
               <ListItem onClick={()=>console.log('primary pressed')} button key={account.id}>
                 <ListItemText primary={account.accName} />
                 <ListItemSecondaryAction>
-                  <IconButton aria-label="edit" onClick={(event) => handleOpenEdit(event)}>
-                    <CreateIcon />
+                  <IconButton aria-label="delete" onClick={(event) => handleOpenDelete(event)}>
+                    <DeleteIcon />
                   </IconButton>
                   <Popover
                     id={account.id}
-                    open={editOpen}
-                    anchorEl={anchorEdit}
-                    onClose={handleCloseEdit}
-                    className={classes.editPopover}
+                    open={deleteOpen}
+                    anchorEl={anchorDelete}
+                    onClose={handleCloseDelete}
+
                     anchorOrigin={{
                       vertical: 'bottom',
                       horizontal: 'center',
@@ -203,12 +218,26 @@ export default function Index() {
                     transformOrigin={{
                       vertical: 'top',
                       horizontal: 'center',
-                    }}>
-                    <input value={account.accName} onChange={(value)=>onEditChange(value,account.id)}></input>
+                    }}
+                  >
+                    <Box
+                      className={classes.deletePopover}
+                      display="flex"
+                      alignItems="center"
+                      flexDirection="column"
+                      >
+                        <Typography align="center">
+                          Are you sure you want to delete account: {account.accName}?
+                        </Typography>
+                        <Button variant="contained" color="secondary" style={{
+                          marginTop: '5px', background: '#FF0000'
+                          }}
+                          onClick={()=>deleteAccount(account.id)}
+                          >
+                          Delete
+                        </Button>
+                    </Box>
                   </Popover>
-                  <IconButton aria-label="delete" onClick={() => console.log(account.id, 'delete pressed')}>
-                    <DeleteIcon />
-                  </IconButton>
 
                 </ListItemSecondaryAction>
 
