@@ -14,9 +14,14 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import Button from '@material-ui/core/Button'
+import DeleteIcon from '@material-ui/icons/Delete';
+import CreateIcon from '@material-ui/icons/Create';
+import Button from '@material-ui/core/Button';
+import Popover from '@material-ui/core/Popover';
 
 
 const drawerWidth = 240;
@@ -24,7 +29,6 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    fontFamily: ['Roboto', 'sans-serif']
   },
   appBar: {
     background: '#2E3B55',
@@ -79,7 +83,10 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 0,
   },
   addAccButton:{
-    padding: -5
+    width:'93%',
+    margin: '5px auto 5px auto'
+  }, editPopover:{
+    padding: 2
   },
 }));
 
@@ -87,11 +94,12 @@ export default function Index() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [anchorEdit, setAnchorEdit] = React.useState(null);
   const [accounts, setAccounts] = React.useState([{ accName: "Default", id: 1, expenses: [
-                                                  { expName: "Lunch", date: "", description: "McDonalds", amount: 6.00} ]}
-                                                ])
-  const [view, setView] = React.useState({view: 'home'})
-
+                                                  { expName: "Lunch", date: "9/24", description: "McDonalds", amount: 6.00} ]}
+                                                ]);
+  const [view, setView] = React.useState('home');
+  const [accId, setAccId] = React.useState(2);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -101,11 +109,37 @@ export default function Index() {
     setOpen(false);
   };
 
+  const handleOpenEdit = (event) => {
+    event.persist();
+    setAnchorEdit(event.currentTarget);
+  }
+  const handleCloseEdit = () => {
+    setAnchorEdit(null);
+  }
+  const handleSaveEdit = () => {
+
+  }
+
+  const addAccount = () => {
+    setAccounts(prevAccounts => prevAccounts.concat([{
+      accName: "Default", id: accId, expenses: []
+    }]));
+    setAccId(prevAccId => prevAccId + 1);
+  }
+
+  const editOpen = Boolean(anchorEdit);
+  const onEditChange = (value, id) => {
+      setAccounts((prevAccounts)=>{
+        const changeIndex=prevAccounts.findIndex((account)=>account.id===id);
+        let toChange = prevAccounts[changeIndex]
+        toChange.accName=value;
+        prevAccounts.splice(changeIndex,1,toChange);
+        return prevAccounts;
+    })
+  }
+
   return (
     <>
-      <Head>
-        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"></link>
-      </Head>
       <div className={classes.root}>
         <CssBaseline />
         <AppBar
@@ -145,20 +179,45 @@ export default function Index() {
             </IconButton>
           </div>
           <Divider />
-          <Button variant="outlined" color="primary">
-            Add Account <AddCircleIcon />
+          <Button onClick={()=>addAccount()} className={classes.addAccButton} variant="outlined" color="primary" endIcon={<AddCircleIcon/>}>
+            Add Account
           </Button>
-          <Divider />
           <List>
             {accounts.map((account) => (
-              <ListItem button key={account.id}>
+              <ListItem onClick={()=>console.log('primary pressed')} button key={account.id}>
                 <ListItemText primary={account.accName} />
+                <ListItemSecondaryAction>
+                  <IconButton aria-label="edit" onClick={(event) => handleOpenEdit(event)}>
+                    <CreateIcon />
+                  </IconButton>
+                  <Popover
+                    id={account.id}
+                    open={editOpen}
+                    anchorEl={anchorEdit}
+                    onClose={handleCloseEdit}
+                    className={classes.editPopover}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'center',
+                    }}>
+                    <input value={account.accName} onChange={(value)=>onEditChange(value,account.id)}></input>
+                  </Popover>
+                  <IconButton aria-label="delete" onClick={() => console.log(account.id, 'delete pressed')}>
+                    <DeleteIcon />
+                  </IconButton>
+
+                </ListItemSecondaryAction>
+
               </ListItem>
             ))}
           </List>
 
-
         </Drawer>
+
         <main
           className={clsx(classes.content, {
             [classes.contentShift]: open,
@@ -166,28 +225,9 @@ export default function Index() {
         >
           <div className={classes.drawerHeader} />
           <Typography paragraph>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-            ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
-            facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-            gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
-            donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-            adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-            Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
-            imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
-            arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-            donec massa sapien faucibus et molestie ac.
+            placeholder
           </Typography>
-          <Typography paragraph>
-            Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla
-            facilisi etiam dignissim diam. Pulvinar elementum integer enim neque volutpat ac
-            tincidunt. Ornare suspendisse sed nisi lacus sed viverra tellus. Purus sit amet volutpat
-            consequat mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus sed
-            vulputate odio. Morbi tincidunt ornare massa eget egestas purus viverra accumsan in. In
-            hendrerit gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem et
-            tortor. Habitant morbi tristique senectus et. Adipiscing elit duis tristique sollicitudin
-            nibh sit. Ornare aenean euismod elementum nisi quis eleifend. Commodo viverra maecenas
-            accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam ultrices sagittis orci a.
-          </Typography>
+
         </main>
       </div>
     </>
