@@ -109,7 +109,7 @@ export default function Index() {
     setOpen(prevOpen => !prevOpen);
   };
 
-  const [accounts, setAccounts] = React.useState([{ accName: "Default", id: 1, expenseId:2 }]);
+  const [accounts, setAccounts] = React.useState({"1":{ accName: "Default", id: 1, expenseId:2 }});
   const [expenses, setExpenses] = React.useState({"1": [
     { expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date('2020-09-24'), category: "Food", amount: 6.00 }]})
   const [accId, setAccId] = React.useState(2);
@@ -124,8 +124,7 @@ export default function Index() {
   }
 
   const setFocus = (id) => {
-    const focusIndex = accounts.findIndex((account) => account.id === id)
-    setFocusTarget({...accounts[focusIndex]});
+    setFocusTarget({...accounts[id]});
     setViewAccount(true);
   }
 
@@ -136,9 +135,10 @@ export default function Index() {
 
 
   const addAccount = () => {
-    setAccounts(prevAccounts => prevAccounts.concat([{
-      accName: "New Account", id: accId, expenseId:1
-    }]))
+    setAccounts(prevAccounts => {
+      prevAccounts[accId] = { accName: "New Account", id: accId, expenseId: 1}
+      return {...prevAccounts}
+  })
     setExpenses(prevExpenses => {
       prevExpenses[accId] = []
       return {...prevExpenses}}
@@ -149,29 +149,43 @@ export default function Index() {
   const deleteAccount = (id) => {
     setViewAccount(false);
     setAccounts(prevAccounts => {
-      const deleteIndex = prevAccounts.findIndex((account) => account.id === id);
-      prevAccounts.splice(deleteIndex, 1);
-      return [...prevAccounts];
+      delete prevAccounts[id];
+      return {...prevAccounts};
+    })
+    setExpenses(prevExpenses=>{
+      delete prevExpenses[id];
+      return prevExpenses;
     })
 
   }
 
   const editAccountName = (name, id) => {
       setAccounts((prevAccounts)=>{
-        const changeIndex=prevAccounts.findIndex((account)=>account.id===id);
-        const toChange = prevAccounts[changeIndex]
-        toChange.accName=name;
-        prevAccounts.splice(changeIndex,1,toChange);
-        return [...prevAccounts];
+        prevAccounts[id].accName=name;
+        return {...prevAccounts};
     })
   }
 
+  const incrementAccountExpense = (id) => {
+    console.log('increment', id)
+    let expenseId;
+    setAccounts((prevAccounts) => {
+      console.log(prevAccounts[id])
+      expenseId = prevAccounts[id].expenseId++;
+      return {...prevAccounts};
+    })
+    return expenseId;
+  }
+
   const addExpense = (accID, expense) => {
+    const expenseId=incrementAccountExpense(accID)
+    expense.expenseId=expenseId
     setExpenses((prevExpenses)=>{
       prevExpenses[accID].push(expense)
       return {...prevExpenses}
     })
   }
+
   const editExpense = (accID, expenseId, expense) =>{
     setExpenses((prevExpenses) => {
       const changeIndex = prevExpenses[accID].findIndex((expense) => expense.id === expenseId);
@@ -179,6 +193,15 @@ export default function Index() {
       return { ...prevExpenses }
     })
   }
+
+  const deleteExpense = (accID, expenseId) => {
+    setExpenses((prevExpenses)=>{
+      const deleteIndex = prevExpenses[accID].findIndex((expense) => expense.id === expenseId)
+      prevExpenses[accID].splice(deleteIndex,0)
+      return {...prevExpenses}
+    })
+  }
+
   const renderMain = () => {
     if (viewAccount){
      return  <AccountPage
@@ -188,6 +211,7 @@ export default function Index() {
         editAccountName={editAccountName}
         addExpense={addExpense}
         editExpense={editExpense}
+        deleteExpense={deleteExpense}
       />
     }
   }
@@ -258,7 +282,7 @@ export default function Index() {
             Add Account
           </Button>
           <List>
-            {accounts.map((account) => (
+            {Object.values(accounts).map((account) => (
               <AccountListItem
                key={account.id}
                account = {account}
