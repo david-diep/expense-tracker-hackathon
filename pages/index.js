@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -15,21 +15,20 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import DeleteIcon from '@material-ui/icons/Delete';
-import CreateIcon from '@material-ui/icons/Create';
 import Button from '@material-ui/core/Button';
-import Popover from '@material-ui/core/Popover';
+import HomeIcon from '@material-ui/icons/Home';
 import Box from '@material-ui/core/Box';
-import { spacing } from '@material-ui/system';
+import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import AccountListItem from '../components/accountListItem';
+import AccountPage from '../components/accountPage';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    background: '#f5f5f5',
   },
   appBar: {
     background: '#2E3B55',
@@ -68,6 +67,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
   },
   content: {
+    display:'flex',
+    justifyContent:'center',
+    paddingTop:'5%',
     flexGrow: 1,
     padding: theme.spacing(3),
     transition: theme.transitions.create('margin', {
@@ -75,6 +77,10 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
+    [theme.breakpoints.up('md')]: {
+      height: '100vh',
+    },
+    background: '#ADD8E6',
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -97,59 +103,117 @@ const useStyles = makeStyles((theme) => ({
 export default function Index() {
   const classes = useStyles();
   const theme = useTheme();
+  //drawer state
   const [open, setOpen] = React.useState(false);
-  const [anchorDelete, setAnchorDelete] = React.useState(null);
-  const [accounts, setAccounts] = React.useState([{ accName: "Default", id: 1, expenses: [
-                                                  { expName: "Lunch", date: "9/24", description: "McDonalds", amount: 6.00} ]}
-                                                ]);
-  const [view, setView] = React.useState('home');
-  const [accId, setAccId] = React.useState(2);
-
-  const deleteOpen = Boolean(anchorDelete);
   const handleDrawerToggle = () => {
     setOpen(prevOpen => !prevOpen);
   };
 
-  const handleOpenDelete = (event) => {
-    event.preventDefault();
-    setAnchorDelete(event.currentTarget);
-  }
-  const handleCloseDelete = () => {
-    setAnchorDelete(null);
-  }
-  const handleSaveEdit = () => {
+  const [accounts, setAccounts] = React.useState({"1":{ accName: "Default", id: 1, expenseId:2 }});
+  const [expenses, setExpenses] = React.useState({"1": [
+    { expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date('2020-09-24'), category: "Food", amount: 6.00 }]})
+  const [accId, setAccId] = React.useState(2);
 
+
+  const [viewAccount, setViewAccount] = React.useState(false);
+
+  const [focusTarget, setFocusTarget] = React.useState(null);
+
+  const clearFocus = () => {
+    setFocusTarget(null);
   }
+
+  const setFocus = (id) => {
+    setFocusTarget({...accounts[id]});
+    setViewAccount(true);
+  }
+
+  const goHome = () => {
+    setViewAccount(false);
+    clearFocus();
+  }
+
 
   const addAccount = () => {
-    setAccounts(prevAccounts => prevAccounts.concat([{
-      accName: "New Account", id: accId, expenses: []
-    }]));
+    setAccounts(prevAccounts => {
+      prevAccounts[accId] = { accName: "New Account", id: accId, expenseId: 1}
+      return {...prevAccounts}
+  })
+    setExpenses(prevExpenses => {
+      prevExpenses[accId] = []
+      return {...prevExpenses}}
+      )
     setAccId(prevAccId => prevAccId + 1);
   }
 
-  const deleteAccount = (event) => {
-    setView("home");
-    handleCloseDelete();
-    console.log(event.target.parentNode.parentNode)
-    // setAccounts(prevAccounts => {
-    //   const deleteIndex = prevAccounts.findIndex((account) => account.id === id);
-    //   console.log(id, prevAccounts[deleteIndex])
+  const deleteAccount = (id) => {
+    setViewAccount(false);
+    setAccounts(prevAccounts => {
+      delete prevAccounts[id];
+      return {...prevAccounts};
+    })
+    setExpenses(prevExpenses=>{
+      delete prevExpenses[id];
+      return prevExpenses;
+    })
 
-    //   prevAccounts.splice(deleteIndex, 1);
-    //   return prevAccounts;
-    // })
   }
 
-
-  const onEditChange = (value, id) => {
+  const editAccountName = (name, id) => {
       setAccounts((prevAccounts)=>{
-        const changeIndex=prevAccounts.findIndex((account)=>account.id===id);
-        let toChange = prevAccounts[changeIndex]
-        toChange.accName=value;
-        prevAccounts.splice(changeIndex,1,toChange);
-        return prevAccounts;
+        prevAccounts[id].accName=name;
+        return {...prevAccounts};
     })
+  }
+
+  const incrementAccountExpense = (id) => {
+    console.log('increment', id)
+    let expenseId;
+    setAccounts((prevAccounts) => {
+      console.log(prevAccounts[id])
+      expenseId = prevAccounts[id].expenseId++;
+      return {...prevAccounts};
+    })
+    return expenseId;
+  }
+
+  const addExpense = (accID, expense) => {
+    const expenseId=incrementAccountExpense(accID)
+    expense.expenseId=expenseId
+    setExpenses((prevExpenses)=>{
+      prevExpenses[accID].push(expense)
+      return {...prevExpenses}
+    })
+  }
+
+  const editExpense = (accID, expenseId, expense) =>{
+    setExpenses((prevExpenses) => {
+      const changeIndex = prevExpenses[accID].findIndex((expense) => expense.id === expenseId);
+      prevExpenses[accID].splice(changeIndex, 1, expense);
+      return { ...prevExpenses }
+    })
+  }
+
+  const deleteExpense = (accID, expenseId) => {
+    setExpenses((prevExpenses)=>{
+      const deleteIndex = prevExpenses[accID].findIndex((expense) => expense.id === expenseId)
+      prevExpenses[accID].splice(deleteIndex,0)
+      return {...prevExpenses}
+    })
+  }
+
+  const renderMain = () => {
+    if (viewAccount){
+     return  <AccountPage
+        key={focusTarget.id}
+        account={focusTarget}
+        expenses={expenses[focusTarget.id]}
+        editAccountName={editAccountName}
+        addExpense={addExpense}
+        editExpense={editExpense}
+        deleteExpense={deleteExpense}
+      />
+    }
   }
 
   return (
@@ -173,9 +237,16 @@ export default function Index() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap>
-              Expenses Light
-            </Typography>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <Typography variant="h6" noWrap onClick={() => goHome()}>
+                Budget Buddy
+              </Typography>
+              <LocalAtmIcon style={{marginLeft: "5px"}}/>
+            </div>
+
           </Toolbar>
         </AppBar>
         <Drawer
@@ -193,19 +264,30 @@ export default function Index() {
             </IconButton>
           </div>
           <Divider />
-          <Button onClick={()=>addAccount()} className={classes.addAccButton} variant="outlined" color="primary" endIcon={<AddCircleIcon/>}>
+          <ListItem button onClick={()=>goHome()}>
+            <ListItemText primary = {'Home'}>
+            </ListItemText>
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+          </ListItem>
+          {/* nested list for save settings */}
+          <Divider />
+          <Button
+            onClick={()=>addAccount()}
+            className={classes.addAccButton}
+            variant="outlined"
+            color="primary"
+            endIcon={<AddCircleIcon/>}>
             Add Account
           </Button>
           <List>
-            {accounts.map((account) => (
+            {Object.values(accounts).map((account) => (
               <AccountListItem
                key={account.id}
                account = {account}
-               handleOpenDelete = {handleOpenDelete}
-               deleteOpen = {deleteOpen}
-               anchorDelete = {anchorDelete}
-               handleCloseDelete = {handleCloseDelete}
-               deleteAccount = {deleteAccount}
+               deleteAccount={deleteAccount}
+               setFocus = {setFocus}
                 />
             ))}
           </List>
@@ -218,9 +300,7 @@ export default function Index() {
           })}
         >
           <div className={classes.drawerHeader} />
-          <Typography paragraph>
-            placeholder
-          </Typography>
+          {renderMain()}
 
         </main>
       </div>
