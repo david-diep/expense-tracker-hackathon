@@ -173,7 +173,7 @@ export default function AccountTable(props) {
                         <IconButton>
                           <EditIcon/>
                         </IconButton>
-                        <IconButton>
+                        <IconButton onClick={()=>props.deleteExpense(props.accountId,row.id)}>
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>

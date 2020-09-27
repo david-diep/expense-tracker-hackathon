@@ -94,8 +94,6 @@ export default function AccountPage(props){
   }
 
   const newExpenseSubmit = (data) => {
-    console.log("data:",data)
-    console.log('accid', props.account.id)
     props.addExpense(props.account.id,{
       expName: data.expenseName,
       description: data.description,
@@ -154,7 +152,7 @@ export default function AccountPage(props){
   <Box className={classes.root}>
     <div className={classes.titleRow}>
       {renderTitle()}
-      <div>
+      <div style={{marginRight:"10px"}}>
         <h2>Total: </h2>
       </div>
     </div>
@@ -167,7 +165,11 @@ export default function AccountPage(props){
       flexDirection="column"
       className={classes.tableContainer}
       >
-        <AccountTable columns={columns} rows={rows}/>
+        <AccountTable columns={columns} rows={rows}
+          accountId={props.account.id}
+          editExpense={props.editExpense}
+          deleteExpense={props.deleteExpense}
+          />
     </Box>
       <Modal
         open={newExpenseModal}
