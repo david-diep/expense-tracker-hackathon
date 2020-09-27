@@ -15,21 +15,20 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import DeleteIcon from '@material-ui/icons/Delete';
-import CreateIcon from '@material-ui/icons/Create';
 import Button from '@material-ui/core/Button';
-import Popover from '@material-ui/core/Popover';
+import HomeIcon from '@material-ui/icons/Home';
 import Box from '@material-ui/core/Box';
-import { spacing } from '@material-ui/system';
+import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import AccountListItem from '../components/accountListItem';
 import AccountPage from '../components/accountPage';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    background: '#f5f5f5',
   },
   appBar: {
     background: '#2E3B55',
@@ -68,6 +67,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
   },
   content: {
+    display:'flex',
+    justifyContent:'center',
+    paddingTop:'5%',
     flexGrow: 1,
     padding: theme.spacing(3),
     transition: theme.transitions.create('margin', {
@@ -75,6 +77,10 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
+    [theme.breakpoints.up('md')]: {
+      height: '100vh',
+    },
+    background: '#ADD8E6',
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -103,35 +109,41 @@ export default function Index() {
     setOpen(prevOpen => !prevOpen);
   };
 
-  const [accounts, setAccounts] = React.useState([{ accName: "Default", id: 1, expenses: [
-                                                  { expName: "Lunch", date: "9/24", description: "McDonalds", amount: 6.00} ]}
-                                                ]);
+  const [accounts, setAccounts] = React.useState([{ accName: "Default", id: 1, expenseId:2 }]);
+  const [expenses, setExpenses] = React.useState({"1": [
+    { expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date('2020-09-24'), category: "Food", amount: 6.00 }]})
   const [accId, setAccId] = React.useState(2);
-  const [view, setView] = React.useState('home');
 
-  const [focusId, setFocusId] = React.useState(null);
+
+  const [viewAccount, setViewAccount] = React.useState(false);
+
+  const [focusTarget, setFocusTarget] = React.useState(null);
 
   const clearFocus = () => {
-    setFocusId(null);
-  }
-  const setFocus = (id) => {
-    setFocusId(id);
+    setFocusTarget(null);
   }
 
-  const refreshSide = () => {
-    setAccounts(prevAccounts=>prevAccounts);
-    console.log("refreshing")
+  const setFocus = (id) => {
+    const focusIndex = accounts.findIndex((account) => account.id === id)
+    setFocusTarget({...accounts[focusIndex]});
+    setViewAccount(true);
   }
+
+  const goHome = () => {
+    setViewAccount(false);
+    clearFocus();
+  }
+
 
   const addAccount = () => {
     setAccounts(prevAccounts => prevAccounts.concat([{
-      accName: "New Account", id: accId, expenses: []
+      accName: "New Account", id: accId, expenseId:1, expenses: []
     }]))
     setAccId(prevAccId => prevAccId + 1);
   }
 
   const deleteAccount = (id) => {
-    setView("home");
+    setViewAccount(false);
     setAccounts(prevAccounts => {
       const deleteIndex = prevAccounts.findIndex((account) => account.id === id);
       prevAccounts.splice(deleteIndex, 1);
@@ -140,18 +152,24 @@ export default function Index() {
 
   }
 
-
-  const onEditChange = (value, id) => {
+  const onEditChange = (name, id) => {
       setAccounts((prevAccounts)=>{
         const changeIndex=prevAccounts.findIndex((account)=>account.id===id);
         let toChange = prevAccounts[changeIndex]
-        toChange.accName=value;
+        toChange.accName=name;
         prevAccounts.splice(changeIndex,1,toChange);
-        return prevAccounts;
+        return [...prevAccounts];
     })
   }
 
-  useEffect(()=>{refreshSide()})
+  const renderMain = () => {
+    if (viewAccount){
+     return  <AccountPage
+        account={focusTarget}
+        expenses={expenses[focusTarget.id]}
+      />
+    }
+  }
 
   return (
     <>
@@ -174,9 +192,16 @@ export default function Index() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap>
-              Expenses Light
-            </Typography>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <Typography variant="h6" noWrap onClick={() => goHome()}>
+                Budget Buddy
+              </Typography>
+              <LocalAtmIcon style={{marginLeft: "5px"}}/>
+            </div>
+
           </Toolbar>
         </AppBar>
         <Drawer
@@ -194,6 +219,14 @@ export default function Index() {
             </IconButton>
           </div>
           <Divider />
+          <ListItem button onClick={()=>goHome()}>
+            <ListItemText primary = {'Home'}>
+            </ListItemText>
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+          </ListItem>
+          <Divider />
           <Button
             onClick={()=>addAccount()}
             className={classes.addAccButton}
@@ -208,6 +241,7 @@ export default function Index() {
                key={account.id}
                account = {account}
                deleteAccount={deleteAccount}
+               setFocus = {setFocus}
                 />
             ))}
           </List>
@@ -220,9 +254,7 @@ export default function Index() {
           })}
         >
           <div className={classes.drawerHeader} />
-          {<AccountPage
-
-          /> && view!=="home"}
+          {renderMain()}
 
         </main>
       </div>
