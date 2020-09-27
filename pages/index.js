@@ -137,8 +137,12 @@ export default function Index() {
 
   const addAccount = () => {
     setAccounts(prevAccounts => prevAccounts.concat([{
-      accName: "New Account", id: accId, expenseId:1, expenses: []
+      accName: "New Account", id: accId, expenseId:1
     }]))
+    setExpenses(prevExpenses => {
+      prevExpenses[accId] = []
+      return {...prevExpenses}}
+      )
     setAccId(prevAccId => prevAccId + 1);
   }
 
@@ -152,21 +156,38 @@ export default function Index() {
 
   }
 
-  const onEditChange = (name, id) => {
+  const editAccountName = (name, id) => {
       setAccounts((prevAccounts)=>{
         const changeIndex=prevAccounts.findIndex((account)=>account.id===id);
-        let toChange = prevAccounts[changeIndex]
+        const toChange = prevAccounts[changeIndex]
         toChange.accName=name;
         prevAccounts.splice(changeIndex,1,toChange);
         return [...prevAccounts];
     })
   }
 
+  const addExpense = (accID, expense) => {
+    setExpenses((prevExpenses)=>{
+      prevExpenses[accID].push(expense)
+      return {...prevExpenses}
+    })
+  }
+  const editExpense = (accID, expenseId, expense) =>{
+    setExpenses((prevExpenses) => {
+      const changeIndex = prevExpenses[accID].findIndex((expense) => expense.id === expenseId);
+      prevExpenses[accID].splice(changeIndex, 1, expense);
+      return { ...prevExpenses }
+    })
+  }
   const renderMain = () => {
     if (viewAccount){
      return  <AccountPage
+        key={focusTarget.id}
         account={focusTarget}
         expenses={expenses[focusTarget.id]}
+        editAccountName={editAccountName}
+        addExpense={addExpense}
+        editExpense={editExpense}
       />
     }
   }
@@ -226,6 +247,7 @@ export default function Index() {
               <HomeIcon />
             </ListItemIcon>
           </ListItem>
+          {/* nested list for save settings */}
           <Divider />
           <Button
             onClick={()=>addAccount()}
