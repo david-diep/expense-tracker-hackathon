@@ -119,6 +119,24 @@ export default function Index() {
 
   const [focusTarget, setFocusTarget] = React.useState(null);
 
+
+  useEffect(()=>{
+    const accountsJSON = window.localStorage.getItem('accounts')
+    const expensesJSON = window.localStorage.getItem('expenses')
+    const newAccIdJSON = window.localStorage.getItem('newAccId')
+    setAccounts(JSON.parse(accountsJSON))
+    setExpenses(JSON.parse(expensesJSON))
+    console.log(expenses)
+    setNewAccId(JSON.parse(newAccIdJSON))
+
+  },[])
+
+  useEffect(() => {
+    window.localStorage.setItem('accounts', JSON.stringify(accounts));
+    window.localStorage.setItem('expenses', JSON.stringify(expenses));
+    window.localStorage.setItem('newAccId', JSON.stringify(accounts));
+  })
+
   const clearFocus = () => {
     setFocusTarget(null);
   }
@@ -143,7 +161,7 @@ export default function Index() {
       prevExpenses[newAccId] = []
       return {...prevExpenses}}
       )
-    setNewAccId(prevNewAccId => prevNewAccId + 1);
+    setNewAccId(prevAccId => prevAccId + 1);
   }
 
   const deleteAccount = (id) => {
@@ -166,10 +184,11 @@ export default function Index() {
     })
   }
 
-  //helper function that increments an account's expense id when creating a few expense
   const incrementAccountExpense = (id) => {
+    console.log('increment', id)
     let expenseId;
     setAccounts((prevAccounts) => {
+      console.log(prevAccounts[id])
       expenseId = prevAccounts[id].expenseId++;
       return {...prevAccounts};
     })
@@ -187,7 +206,7 @@ export default function Index() {
 
   const editExpense = (accId, expenseId, expense) =>{
     setExpenses((prevExpenses) => {
-      const changeIndex = prevExpenses[accId].findIndex((expense) => expense.expenseId === expenseId);
+      const changeIndex = prevExpenses[accId].findIndex((expense) => expense.id === expenseId);
       prevExpenses[accId].splice(changeIndex, 1, expense);
       return { ...prevExpenses }
     })
@@ -195,8 +214,8 @@ export default function Index() {
 
   const deleteExpense = (accId, expenseId) => {
     setExpenses((prevExpenses)=>{
-      const deleteIndex = prevExpenses[accId].findIndex((expense) => expense.expenseId === expenseId)
-      prevExpenses[accId].splice(deleteIndex,1)
+      const deleteIndex = prevExpenses[accId].findIndex((expense) => expense.id === expenseId)
+      prevExpenses[accId].splice(deleteIndex,0)
       return {...prevExpenses}
     })
   }
