@@ -116,10 +116,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function AccountTable(props) {
+export default function OverviewTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("date");
+
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -140,28 +141,63 @@ export default function AccountTable(props) {
     )
   }
 
-  const getTableColumns = () =>{
-    const columns = [
-      { id: 'date', label: "Date" },
-      { id: 'expName', label: 'Name' },
-      { id: 'description', label: 'Description' },
-      { id: 'category', label: 'Category' },
-      { id: 'amount', rightAlign: true, label: 'Amount' },
-    ];
+  const renderTableBody = () => {
+    if (props.mode==="Default"){
+      return (
+      <TableBody>
+        {stableSort(props.rows, getComparator(order, orderBy))
+          .map((row, index) => {
+            const labelId = `enhanced-table-checkbox-${index}`;
+            return (
+              <TableRow
+                hover
+                tabIndex={-1}
+                key={row.expenseId}
+              >
+                <TableCell component="th" id={labelId} scope="row">
+                  {moment(row.date).format('M/DD/YY')}
+                </TableCell>
+                <TableCell>{row.account}</TableCell>
+                <TableCell >{row.expName}</TableCell>
+                <TableCell >{row.description}</TableCell>
+                <TableCell >{row.category}</TableCell>
+                <TableCell align="right">{row.amount.toFixed(2)}</TableCell>
+
+              </TableRow>
+            );
+          })}
+
+      </TableBody>
+        )
+    } else if (props.mode ==="Category"){
+      return(
+        <TableBody>
+          {stableSort(props.rows, getComparator(order, orderBy))
+            .map((row, index) => {
+              const labelId = `enhanced-table-checkbox-${index}`;
+              return (
+                <TableRow
+                  hover
+                  tabIndex={-1}
+                  key={row.expenseId}
+                >
+                  <TableCell component="th" id={labelId} scope="row">
+                    {moment(row.date).format('M/DD/YY')}
+                  </TableCell>
+                  <TableCell>{row.account}</TableCell>
+                  <TableCell >{row.expName}</TableCell>
+                  <TableCell >{row.description}</TableCell>
+                  <TableCell align="right">{row.amount.toFixed(2)}</TableCell>
+
+                </TableRow>
+              );
+            })}
+
+        </TableBody>
+      )
+    }
   }
 
-  const getTableRows = () => {
-    const rows = props.expenses.map((expense) => {
-      return {
-        expenseId: expense.expenseId,
-        date: expense.date,
-        expName: expense.expName,
-        description: expense.description,
-        category: expense.category,
-        amount: expense.amount,
-      }
-    })
-  }
 
   return (
     <div className={classes.root}>
@@ -170,7 +206,7 @@ export default function AccountTable(props) {
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
-            size="small"
+            size="medium"
             aria-label="enhanced table"
           >
             {renderColGroup()}
@@ -182,36 +218,7 @@ export default function AccountTable(props) {
               rowCount={props.rows.length}
               columns={props.columns}
             />
-            <TableBody>
-              {stableSort(props.rows, getComparator(order, orderBy))
-                .map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow
-                      hover
-                      tabIndex={-1}
-                      key={row.name}
-                    >
-                      <TableCell component="th" id={labelId} scope="row">
-                        {moment(row.date).format('M/DD/YY')}
-                      </TableCell>
-                      <TableCell >{row.expName}</TableCell>
-                      <TableCell >{row.description}</TableCell>
-                      <TableCell >{row.category}</TableCell>
-                      <TableCell align="right">{row.amount.toFixed(2)}</TableCell>
-                      <TableCell>
-                        <IconButton onClick={() => props.handleEditExpense(row)}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton onClick={() => props.deleteExpense(props.accountId, row.expenseId)}>
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-
-            </TableBody>
+            {renderTableBody()}
           </Table>
         </TableContainer>
       </Paper>

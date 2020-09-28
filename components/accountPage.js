@@ -28,7 +28,8 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
   },
   tableContainer:{
-    marginTop:'15px'
+    marginTop:'15px',
+
   },
   titleRow: {
     display:'flex',
@@ -89,6 +90,9 @@ export default function AccountPage(props){
   })
   useEffect(()=>{
     calculateTotal();
+    if(!editName){
+      setTitle(props.getAccountName(props.account.id));
+    }
   })
   const calculateTotal = () => {
     let total=0;
@@ -98,10 +102,10 @@ export default function AccountPage(props){
     setTotal(total);
   }
 
+
   const editAccountSubmit = (data) => {
     props.editAccountName(data.newAccName,props.account.id);
     setEditName(false);
-    setTitle(data.newAccName);
   }
 
   const newExpenseSubmit = (data) => {
@@ -273,9 +277,6 @@ export default function AccountPage(props){
         Add Expense
       </Button>
     <Box
-      display="flex"
-      alignItems="center"
-      flexDirection="column"
       className={classes.tableContainer}
       >
         <AccountTable columns={columns} rows={rows}
@@ -290,7 +291,7 @@ export default function AccountPage(props){
       >
        <Paper className={classes.modal}>
 
-            <form className={classes.modalContainer} onSubmit={handleSubmit(newExpenseSubmit)}>
+          <form className={classes.modalContainer} onSubmit={handleSubmit(newExpenseSubmit)}>
               <h2>Add New Expense</h2>
 
               <MuiPickersUtilsProvider utils={MomentUtils}>

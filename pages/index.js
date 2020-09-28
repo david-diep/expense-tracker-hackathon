@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Index() {
   const classes = useStyles();
   const theme = useTheme();
-  //drawer state
+
   const [open, setOpen] = React.useState(false);
   const handleDrawerToggle = () => {
     setOpen(prevOpen => !prevOpen);
@@ -111,7 +111,7 @@ export default function Index() {
 
   const [accounts, setAccounts] = React.useState({"1":{ accName: "Default", id: 1 }});
   const [expenses, setExpenses] = React.useState({"1": [
-    { expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date('2020-09-24'), category: "Food", amount: 6.00 }]})
+    { expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date(), category: "Food", amount: 6.00 }]})
   const [newAccId, setNewAccId] = React.useState(2);
   const [newExpenseId, setNewExpenseId]= React.useState(2);
 
@@ -136,8 +136,8 @@ export default function Index() {
   useEffect(() => {
     window.localStorage.setItem('accounts', JSON.stringify(accounts));
     window.localStorage.setItem('expenses', JSON.stringify(expenses));
-    window.localStorage.setItem('newAccId', JSON.stringify(accounts));
-    window.localStorage.setItem('newExpenseId', JSON.stringify(accounts));
+    window.localStorage.setItem('newAccId', JSON.stringify(newAccId));
+    window.localStorage.setItem('newExpenseId', JSON.stringify(newExpenseId));
   })
 
   const clearFocus = () => {
@@ -145,7 +145,7 @@ export default function Index() {
   }
 
   const setFocus = (id) => {
-    setFocusTarget({...accounts[id]});
+    setFocusTarget(accounts[id]);
     setViewAccount(true);
   }
 
@@ -158,11 +158,12 @@ export default function Index() {
   const addAccount = () => {
     setAccounts(prevAccounts => {
       prevAccounts[newAccId] = { accName: "New Account", id: newAccId}
-      return {...prevAccounts}
+      return {...prevAccounts};
   })
     setExpenses(prevExpenses => {
-      prevExpenses[newAccId] = []
-      return {...prevExpenses}}
+      prevExpenses[newAccId] = [];
+      return { ...prevExpenses };
+    }
       )
     setNewAccId(prevAccId => prevAccId + 1);
   }
@@ -175,7 +176,7 @@ export default function Index() {
     })
     setExpenses(prevExpenses=>{
       delete prevExpenses[id];
-      return prevExpenses;
+      return {...prevExpenses};
     })
 
   }
@@ -189,11 +190,10 @@ export default function Index() {
 
 
   const addExpense = (accId, expense) => {
-
     expense.expenseId=newExpenseId
     setExpenses((prevExpenses)=>{
-      prevExpenses[accId].push(expense)
-      return {...prevExpenses}
+      prevExpenses[accId].push(expense);
+      return {...prevExpenses};
     })
     setNewExpenseId(prevExpenseId=>prevExpenseId+1)
   }
@@ -202,21 +202,26 @@ export default function Index() {
     setExpenses((prevExpenses) => {
       const changeIndex = prevExpenses[accId].findIndex((expense) => expense.expenseId=== expenseId);
       prevExpenses[accId].splice(changeIndex, 1, expense);
-      return { ...prevExpenses }
+      return {...prevExpenses}
     })
+  }
+
+  const getAccountName = (accId) =>{
+    return accounts[accId].accName;
   }
 
   const deleteExpense = (accId, expenseId) => {
     setExpenses((prevExpenses)=>{
       const deleteIndex = prevExpenses[accId].findIndex((expense) => expense.expenseId === expenseId)
       prevExpenses[accId].splice(deleteIndex,1)
-      return {...prevExpenses}
+      return {...prevExpenses};
     })
   }
 
   const renderMain = () => {
     if (viewAccount){
      return  <AccountPage
+       getAccountName={getAccountName}
         account={focusTarget}
         expenses={expenses[focusTarget.id]}
         editAccountName={editAccountName}
