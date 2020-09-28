@@ -115,6 +115,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+
 export default function AccountTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
@@ -126,6 +127,42 @@ export default function AccountTable(props) {
     setOrderBy(property);
   };
 
+  const renderColGroup = ()=>{
+    return(
+      <colgroup>
+        <col style={{ width: '15%' }} />
+        <col style={{ width: '20%' }} />
+        <col style={{ width: '20%' }} />
+        <col style={{ width: '15%' }} />
+        <col style={{ width: '15%' }} />
+        <col style={{ width: '15%' }} />
+      </colgroup>
+    )
+  }
+
+  const getTableColumns = () =>{
+    const columns = [
+      { id: 'date', label: "Date" },
+      { id: 'expName', label: 'Name' },
+      { id: 'description', label: 'Description' },
+      { id: 'category', label: 'Category' },
+      { id: 'amount', rightAlign: true, label: 'Amount' },
+    ];
+  }
+
+  const getTableRows = () => {
+    const rows = props.expenses.map((expense) => {
+      return {
+        expenseId: expense.expenseId,
+        date: expense.date,
+        expName: expense.expName,
+        description: expense.description,
+        category: expense.category,
+        amount: expense.amount,
+      }
+    })
+  }
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -136,14 +173,7 @@ export default function AccountTable(props) {
             size="small"
             aria-label="enhanced table"
           >
-            <colgroup>
-              <col style={{ width: '15%' }} />
-              <col style={{ width: '20%' }} />
-              <col style={{ width: '20%' }} />
-              <col style={{ width: '15%' }} />
-              <col style={{ width: '15%' }} />
-              <col style={{ width: '15%' }} />
-            </colgroup>
+            {renderColGroup()}
             <EnhancedTableHead
               classes={classes}
               order={order}
@@ -154,16 +184,16 @@ export default function AccountTable(props) {
             />
             <TableBody>
               {stableSort(props.rows, getComparator(order, orderBy))
-                .map((row) => {
-                  const labelId = `table-${row.expenseId}`;
+                .map((row, index) => {
+                  const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow
                       hover
                       tabIndex={-1}
-                      key={row.expenseId}
+                      key={row.name}
                     >
                       <TableCell component="th" id={labelId} scope="row">
-                        {moment(row.date).format('MM/DD/YY')}
+                        {moment(row.date).format('M/DD/YY')}
                       </TableCell>
                       <TableCell >{row.expName}</TableCell>
                       <TableCell >{row.description}</TableCell>
@@ -171,9 +201,9 @@ export default function AccountTable(props) {
                       <TableCell align="right">{row.amount.toFixed(2)}</TableCell>
                       <TableCell>
                         <IconButton onClick={() => props.handleEditExpense(row)}>
-                          <EditIcon/>
+                          <EditIcon />
                         </IconButton>
-                        <IconButton onClick={()=>props.deleteExpense(props.accountId,row.expenseId)}>
+                        <IconButton onClick={() => props.deleteExpense(props.accountId, row.expenseId)}>
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>

@@ -18,10 +18,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Button from '@material-ui/core/Button';
 import HomeIcon from '@material-ui/icons/Home';
-import Box from '@material-ui/core/Box';
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import AccountListItem from '../components/accountListItem';
 import AccountPage from '../components/accountPage';
+import HomePage from '../components/homePage';
 
 const drawerWidth = 240;
 
@@ -109,11 +109,11 @@ export default function Index() {
     setOpen(prevOpen => !prevOpen);
   };
 
-  const [accounts, setAccounts] = React.useState({"1":{ accName: "Default", id: 1, expenseId:2 }});
+  const [accounts, setAccounts] = React.useState({"1":{ accName: "Default", id: 1 }});
   const [expenses, setExpenses] = React.useState({"1": [
     { expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date('2020-09-24'), category: "Food", amount: 6.00 }]})
   const [newAccId, setNewAccId] = React.useState(2);
-
+  const [newExpenseId, setNewExpenseId]= React.useState(2);
 
   const [viewAccount, setViewAccount] = React.useState(false);
 
@@ -124,10 +124,12 @@ export default function Index() {
     const accountsJSON = window.localStorage.getItem('accounts')
     const expensesJSON = window.localStorage.getItem('expenses')
     const newAccIdJSON = window.localStorage.getItem('newAccId')
-    if (accountsJSON && expensesJSON && newAccIdJSON) {
+    const newExpenseIdJSON = window.localStorage.getItem('newExpenseId')
+    if (accountsJSON && expensesJSON && newAccIdJSON && newExpenseIdJSON) {
       setAccounts(JSON.parse(accountsJSON))
       setExpenses(JSON.parse(expensesJSON))
       setNewAccId(JSON.parse(newAccIdJSON))
+      setNewExpenseId(JSON.parse(newExpenseIdJSON))
     }
   },[])
 
@@ -135,6 +137,7 @@ export default function Index() {
     window.localStorage.setItem('accounts', JSON.stringify(accounts));
     window.localStorage.setItem('expenses', JSON.stringify(expenses));
     window.localStorage.setItem('newAccId', JSON.stringify(accounts));
+    window.localStorage.setItem('newExpenseId', JSON.stringify(accounts));
   })
 
   const clearFocus = () => {
@@ -154,7 +157,7 @@ export default function Index() {
 
   const addAccount = () => {
     setAccounts(prevAccounts => {
-      prevAccounts[newAccId] = { accName: "New Account", id: newAccId, expenseId: 1}
+      prevAccounts[newAccId] = { accName: "New Account", id: newAccId}
       return {...prevAccounts}
   })
     setExpenses(prevExpenses => {
@@ -184,29 +187,20 @@ export default function Index() {
     })
   }
 
-  const incrementAccountExpense = (id) => {
-    console.log('increment', id)
-    let expenseId;
-    setAccounts((prevAccounts) => {
-      console.log(prevAccounts[id])
-      expenseId = prevAccounts[id].expenseId++;
-      return {...prevAccounts};
-    })
-    return expenseId;
-  }
 
   const addExpense = (accId, expense) => {
-    const expenseId=incrementAccountExpense(accId)
-    expense.expenseId=expenseId
+
+    expense.expenseId=newExpenseId
     setExpenses((prevExpenses)=>{
       prevExpenses[accId].push(expense)
       return {...prevExpenses}
     })
+    setNewExpenseId(prevExpenseId=>prevExpenseId+1)
   }
 
   const editExpense = (accId, expenseId, expense) =>{
     setExpenses((prevExpenses) => {
-      const changeIndex = prevExpenses[accId].findIndex((expense) => expense.id === expenseId);
+      const changeIndex = prevExpenses[accId].findIndex((expense) => expense.expenseId=== expenseId);
       prevExpenses[accId].splice(changeIndex, 1, expense);
       return { ...prevExpenses }
     })
@@ -214,8 +208,8 @@ export default function Index() {
 
   const deleteExpense = (accId, expenseId) => {
     setExpenses((prevExpenses)=>{
-      const deleteIndex = prevExpenses[accId].findIndex((expense) => expense.id === expenseId)
-      prevExpenses[accId].splice(deleteIndex,0)
+      const deleteIndex = prevExpenses[accId].findIndex((expense) => expense.expenseId === expenseId)
+      prevExpenses[accId].splice(deleteIndex,1)
       return {...prevExpenses}
     })
   }
@@ -223,7 +217,6 @@ export default function Index() {
   const renderMain = () => {
     if (viewAccount){
      return  <AccountPage
-        key={focusTarget.id}
         account={focusTarget}
         expenses={expenses[focusTarget.id]}
         editAccountName={editAccountName}
@@ -231,6 +224,13 @@ export default function Index() {
         editExpense={editExpense}
         deleteExpense={deleteExpense}
       />
+    } else{
+      return (
+        <HomePage
+          expenses={expenses}
+          accounts={accounts}
+        />
+      )
     }
   }
 

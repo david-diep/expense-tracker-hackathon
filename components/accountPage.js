@@ -70,7 +70,7 @@ export default function AccountPage(props){
 
   const columns = [
     { id: 'date',  label: "Date" },
-    { id: 'name',  label: 'Name'},
+    { id: 'expName',  label: 'Name'},
     { id: 'description',  label: 'Description' },
     { id: 'category',  label: 'Category'},
     { id: 'amount', rightAlign: true, label: 'Amount' },
@@ -225,7 +225,7 @@ export default function AccountPage(props){
 
             />
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
-              <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Add</Button>
+              <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Edit</Button>
               <Button onClick={() => setEditExpenseModal(false)} type="reset" style={{ background: '#FF0000', marginLeft: '5px' }}>Cancel</Button>
             </div>
           </form>
