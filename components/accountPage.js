@@ -266,7 +266,7 @@ export default function AccountPage(props){
     <div className={classes.titleRow}>
       {renderTitle()}
       <div style={{marginRight:"10px"}}>
-          <h2>Total: ${total.toFixed(2)}</h2>
+          {Boolean(total) && <h2>Total: ${total.toFixed(2)}</h2>}
       </div>
     </div>
       <Button onClick={() => setNewExpenseModal(true)} variant="contained" color="primary" endIcon={<AddCircleIcon />}>
