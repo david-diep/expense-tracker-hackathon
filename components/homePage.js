@@ -191,7 +191,7 @@ export default function HomePage(props) {
             </Select>
 
           </FormControl>
-          <FormControl>
+          <FormControl style={{marginLeft:'5px'}}>
 
             {renderSecondSelect()}
           </FormControl>
