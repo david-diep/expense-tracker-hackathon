@@ -17,6 +17,7 @@ import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
+import { useEffect } from 'react';
 
 const useStyles = makeStyles(() => ({
   root:{
@@ -57,7 +58,6 @@ const useStyles = makeStyles(() => ({
 export default function AccountPage(props){
 
   const classes = useStyles();
-
   const [editName, setEditName] = React.useState(false);
   const { register, handleSubmit, control } = useForm();
   const [title, setTitle] = React.useState(props.account.accName);
@@ -66,6 +66,7 @@ export default function AccountPage(props){
   const [editExpenseModal, setEditExpenseModal] = React.useState(false);
   const [selectedDate, handleDateChange] = React.useState(new Date());
   const [value, setValue] = React.useState();
+  const [total, setTotal] = React.useState();
 
   const columns = [
     { id: 'date',  label: "Date" },
@@ -86,12 +87,21 @@ export default function AccountPage(props){
       amount: expense.amount,
     }
   })
-
+  useEffect(()=>{
+    calculateTotal();
+  })
+  const calculateTotal = () => {
+    let total=0;
+    for(let i=0;i< props.expenses.length;i++){
+      total+=props.expenses[i].amount;
+    }
+    setTotal(total);
+  }
 
   const editAccountSubmit = (data) => {
     props.editAccountName(data.newAccName,props.account.id);
     setEditName(false);
-    setTitle(data.newAccName)
+    setTitle(data.newAccName);
   }
 
   const newExpenseSubmit = (data) => {
@@ -256,7 +266,7 @@ export default function AccountPage(props){
     <div className={classes.titleRow}>
       {renderTitle()}
       <div style={{marginRight:"10px"}}>
-        <h2>Total: </h2>
+          <h2>Total: ${total.toFixed(2)}</h2>
       </div>
     </div>
       <Button onClick={() => setNewExpenseModal(true)} variant="contained" color="primary" endIcon={<AddCircleIcon />}>
