@@ -17,6 +17,7 @@ import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
+import { useEffect } from 'react';
 
 const useStyles = makeStyles(() => ({
   root:{
@@ -57,14 +58,15 @@ const useStyles = makeStyles(() => ({
 export default function AccountPage(props){
 
   const classes = useStyles();
-
   const [editName, setEditName] = React.useState(false);
   const { register, handleSubmit, control } = useForm();
   const [title, setTitle] = React.useState(props.account.accName);
   const [newExpenseModal, setNewExpenseModal] = React.useState(false);
-  const [editExpenseModal, editNewExpenseModal] = React.useState(false);
+  const [editFocus, setEditFocus] = React.useState(null);
+  const [editExpenseModal, setEditExpenseModal] = React.useState(false);
   const [selectedDate, handleDateChange] = React.useState(new Date());
   const [value, setValue] = React.useState();
+  const [total, setTotal] = React.useState();
 
   const columns = [
     { id: 'date',  label: "Date" },
@@ -77,25 +79,32 @@ export default function AccountPage(props){
 
   const rows = props.expenses.map((expense) => {
     return {
-      id: expense.expenseId,
+      expenseId: expense.expenseId,
       date: expense.date,
-      name: expense.expName,
+      expName: expense.expName,
       description: expense.description,
       category: expense.category,
       amount: expense.amount,
     }
   })
-
+  useEffect(()=>{
+    calculateTotal();
+  })
+  const calculateTotal = () => {
+    let total=0;
+    for(let i=0;i< props.expenses.length;i++){
+      total+=props.expenses[i].amount;
+    }
+    setTotal(total);
+  }
 
   const editAccountSubmit = (data) => {
     props.editAccountName(data.newAccName,props.account.id);
     setEditName(false);
-    setTitle(data.newAccName)
+    setTitle(data.newAccName);
   }
 
   const newExpenseSubmit = (data) => {
-    console.log("data:",data)
-    console.log('accid', props.account.id)
     props.addExpense(props.account.id,{
       expName: data.expenseName,
       description: data.description,
@@ -103,23 +112,129 @@ export default function AccountPage(props){
       category: data.category,
       amount: value })
     setValue(null);
+    setNewExpenseModal(false);
   }
-// { expName: "Lunch", date: "9/24", description: "McDonalds", amount: 6.00 }
-  // const generateRows = () => {
-  //   const rows = props.account.expenses.map((expense) => {
-  //     return {
-  //       id: expense.expenseId,
-  //       date: expense.date,
-  //       expense: expense.expName,
-  //       description: expense.description,
-  //       amount: expense.amount
-  //     }
-  //   })
-  //   return rows;
-  // }
+
+  const handleEditExpense = (expense) => {
+
+    handleDateChange(expense.date)
+    setValue(expense.amount)
+    setEditFocus(expense);
+    setEditExpenseModal(true);
+
+  }
+
+  const editExpenseSubmit = (data) => {
+    props.editExpense(props.account.id, editFocus.expenseId, {
+      expenseId: editFocus.expenseId,
+      expName: data.expenseName,
+      description: data.description,
+      date: selectedDate,
+      category: data.category,
+      amount: value
+    })
+    cleanInputs()
+    setEditFocus(null);
+    setEditExpenseModal(null);
+  }
+
+  const cleanInputs = () =>{
+    handleDateChange(new Date());
+    setValue(null);
+  }
+
+  const renderEditExpenseModal = () => {
+    if (editFocus){
+    return (
+      <Modal
+        open={editExpenseModal}
+        onClose={() => setEditExpenseModal(false)}
+      >
+        <Paper className={classes.modal}>
+
+          <form className={classes.modalContainer} onSubmit={handleSubmit(editExpenseSubmit)}>
+            <h2>Edit Expense</h2>
+
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <KeyboardDatePicker
+                disableToolbar
+                variant="inline"
+                format="MM/DD/yyyy"
+                margin="normal"
+                value={selectedDate}
+                onChange={date => handleDateChange(date)}
+                id="date-picker"
+                label="Date"
+                style={{ fontSize: '2rem' }}
+              />
+            </MuiPickersUtilsProvider>
+
+            <Controller as={TextField} control={control}
+              id='expenseName'
+              name='expenseName'
+              defaultValue={editFocus.expName}
+              ref={register}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              style={{ fontSize: '2rem' }}
+
+              label="Expense Name" />
+            <Controller as={TextField} control={control}
+              id='description'
+              name='description'
+              defaultValue={editFocus.description}
+              ref={register}
+              style={{ fontSize: '2rem' }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              label="Description" />
+            <Controller as={
+              <TextField>
+                <MenuItem value='Food'>Food</MenuItem>
+                <MenuItem value='Entertainment'>Entertainment</MenuItem>
+                <MenuItem value='Clothing'>Clothing</MenuItem>
+                <MenuItem value='Bills'>Bills</MenuItem>
+                <MenuItem value='Travel'>Travel</MenuItem>
+                <MenuItem value='Other'>Other</MenuItem>
+              </TextField>}
+              control={control}
+              select
+              id='category'
+              name='category'
+              defaultValue={editFocus.category}
+              ref={register}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              style={{ fontSize: '1rem' }}
+
+              label="Category" />
 
 
+            <CurrencyTextField
+              label="Amount"
+              variant="standard"
+              value={value}
+              decimalCharacter="."
+              digitGroupSeparator=","
+              onChange={(event, value) => setValue(value)}
 
+              currencySymbol="$"
+
+            />
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+              <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Add</Button>
+              <Button onClick={() => setEditExpenseModal(false)} type="reset" style={{ background: '#FF0000', marginLeft: '5px' }}>Cancel</Button>
+            </div>
+          </form>
+
+        </Paper>
+      </Modal>
+    )
+  }
+}
   const renderTitle = () => {
     if(!editName){
       return(
@@ -140,22 +255,18 @@ export default function AccountPage(props){
             defaultValue={props.account.accName}
             label="Account Name"/>
           <Button type="submit" style={{ background:'#228B22', marginLeft:'5px'}}>Save</Button>
-            <Button onClick={()=>setEditName(false)} type="reset" style={{ background: '#FF0000', marginLeft: '5px'}}>Cancel</Button>
+          <Button onClick={() => { setEditName(false); cleanInputs();}} type="reset" style={{ background: '#FF0000', marginLeft: '5px'}}>Cancel</Button>
           </form>
       )
     }
-  }
-
-  const renderModal = () => {
-
   }
 
   return (
   <Box className={classes.root}>
     <div className={classes.titleRow}>
       {renderTitle()}
-      <div>
-        <h2>Total: </h2>
+      <div style={{marginRight:"10px"}}>
+          <h2>Total: ${total.toFixed(2)}</h2>
       </div>
     </div>
       <Button onClick={() => setNewExpenseModal(true)} variant="contained" color="primary" endIcon={<AddCircleIcon />}>
@@ -167,7 +278,11 @@ export default function AccountPage(props){
       flexDirection="column"
       className={classes.tableContainer}
       >
-        <AccountTable columns={columns} rows={rows}/>
+        <AccountTable columns={columns} rows={rows}
+          accountId={props.account.id}
+          handleEditExpense={handleEditExpense}
+          deleteExpense={props.deleteExpense}
+          />
     </Box>
       <Modal
         open={newExpenseModal}
@@ -191,8 +306,6 @@ export default function AccountPage(props){
                       style={{ fontSize: '2rem' }}
                     />
               </MuiPickersUtilsProvider>
-
-
 
               <Controller as={TextField} control={control}
                 id='expenseName'
@@ -242,19 +355,19 @@ export default function AccountPage(props){
               decimalCharacter="."
               digitGroupSeparator=","
               onChange={(event, value) => setValue(value)}
-              unselectable
+
               currencySymbol="$"
 
             />
               <div style={{display:'flex',justifyContent:'flex-end', marginTop:'10px'}}>
                 <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Add</Button>
-                <Button onClick={() => setNewExpenseModal(false)} type="reset" style={{ background: '#FF0000', marginLeft: '5px' }}>Cancel</Button>
+              <Button onClick={() => { setNewExpenseModal(false); cleanInputs();}} type="reset" style={{ background: '#FF0000', marginLeft: '5px' }}>Cancel</Button>
               </div>
             </form>
 
        </Paper>
     </Modal>
-
+      {renderEditExpenseModal()}
   </Box>
   )
 }

@@ -112,7 +112,7 @@ export default function Index() {
   const [accounts, setAccounts] = React.useState({"1":{ accName: "Default", id: 1, expenseId:2 }});
   const [expenses, setExpenses] = React.useState({"1": [
     { expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date('2020-09-24'), category: "Food", amount: 6.00 }]})
-  const [accId, setAccId] = React.useState(2);
+  const [newAccId, setNewAccId] = React.useState(2);
 
 
   const [viewAccount, setViewAccount] = React.useState(false);
@@ -136,14 +136,14 @@ export default function Index() {
 
   const addAccount = () => {
     setAccounts(prevAccounts => {
-      prevAccounts[accId] = { accName: "New Account", id: accId, expenseId: 1}
+      prevAccounts[newAccId] = { accName: "New Account", id: newAccId, expenseId: 1}
       return {...prevAccounts}
   })
     setExpenses(prevExpenses => {
-      prevExpenses[accId] = []
+      prevExpenses[newAccId] = []
       return {...prevExpenses}}
       )
-    setAccId(prevAccId => prevAccId + 1);
+    setNewAccId(prevNewAccId => prevNewAccId + 1);
   }
 
   const deleteAccount = (id) => {
@@ -166,38 +166,37 @@ export default function Index() {
     })
   }
 
+  //helper function that increments an account's expense id when creating a few expense
   const incrementAccountExpense = (id) => {
-    console.log('increment', id)
     let expenseId;
     setAccounts((prevAccounts) => {
-      console.log(prevAccounts[id])
       expenseId = prevAccounts[id].expenseId++;
       return {...prevAccounts};
     })
     return expenseId;
   }
 
-  const addExpense = (accID, expense) => {
-    const expenseId=incrementAccountExpense(accID)
+  const addExpense = (accId, expense) => {
+    const expenseId=incrementAccountExpense(accId)
     expense.expenseId=expenseId
     setExpenses((prevExpenses)=>{
-      prevExpenses[accID].push(expense)
+      prevExpenses[accId].push(expense)
       return {...prevExpenses}
     })
   }
 
-  const editExpense = (accID, expenseId, expense) =>{
+  const editExpense = (accId, expenseId, expense) =>{
     setExpenses((prevExpenses) => {
-      const changeIndex = prevExpenses[accID].findIndex((expense) => expense.id === expenseId);
-      prevExpenses[accID].splice(changeIndex, 1, expense);
+      const changeIndex = prevExpenses[accId].findIndex((expense) => expense.expenseId === expenseId);
+      prevExpenses[accId].splice(changeIndex, 1, expense);
       return { ...prevExpenses }
     })
   }
 
-  const deleteExpense = (accID, expenseId) => {
+  const deleteExpense = (accId, expenseId) => {
     setExpenses((prevExpenses)=>{
-      const deleteIndex = prevExpenses[accID].findIndex((expense) => expense.id === expenseId)
-      prevExpenses[accID].splice(deleteIndex,0)
+      const deleteIndex = prevExpenses[accId].findIndex((expense) => expense.expenseId === expenseId)
+      prevExpenses[accId].splice(deleteIndex,1)
       return {...prevExpenses}
     })
   }
