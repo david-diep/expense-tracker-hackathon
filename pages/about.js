@@ -49,6 +49,9 @@ export default function About() {
             <div>
               <h3>Organize your expenses by category!</h3>
               <h3>View their total cost as well!</h3>
+              <Link href="/">
+                <Button variant="contained" style={{ marginLeft: "20px", }}>Try me!</Button>
+              </Link>
             </div>
           </div>
       </Box>
