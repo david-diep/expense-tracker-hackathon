@@ -121,10 +121,10 @@ export default function Index() {
 
 
   useEffect(()=>{
-    const accountsJSON = window.localStorage.getItem('accounts')
-    const expensesJSON = window.localStorage.getItem('expenses')
-    const newAccIdJSON = window.localStorage.getItem('newAccId')
-    const newExpenseIdJSON = window.localStorage.getItem('newExpenseId')
+    const accountsJSON = window.localStorage.getItem('bb-accounts')
+    const expensesJSON = window.localStorage.getItem('bb-expenses')
+    const newAccIdJSON = window.localStorage.getItem('bb-newAccId')
+    const newExpenseIdJSON = window.localStorage.getItem('bb-newExpenseId')
     if (accountsJSON && expensesJSON && newAccIdJSON && newExpenseIdJSON) {
       setAccounts(JSON.parse(accountsJSON))
       setExpenses(JSON.parse(expensesJSON))
@@ -134,10 +134,10 @@ export default function Index() {
   },[])
 
   useEffect(() => {
-    window.localStorage.setItem('accounts', JSON.stringify(accounts));
-    window.localStorage.setItem('expenses', JSON.stringify(expenses));
-    window.localStorage.setItem('newAccId', JSON.stringify(newAccId));
-    window.localStorage.setItem('newExpenseId', JSON.stringify(newExpenseId));
+    window.localStorage.setItem('bb-accounts', JSON.stringify(accounts));
+    window.localStorage.setItem('bb-expenses', JSON.stringify(expenses));
+    window.localStorage.setItem('bb-newAccId', JSON.stringify(newAccId));
+    window.localStorage.setItem('bb-newExpenseId', JSON.stringify(newExpenseId));
   })
 
   const clearFocus = () => {
