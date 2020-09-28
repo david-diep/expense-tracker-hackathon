@@ -9,7 +9,7 @@ import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 
 export default function About() {
   return (
-    <div style={{ background: '#ADD8E6', height:"100vh" }}>
+    <div style={{ background: '#ADD8E6', minHeight:"100vh" }}>
     <Container >
         <Box py={4} style={{
           background:  '#f5f5f5', minHeight:"90vh"}}>
