@@ -1,4 +1,4 @@
 # Budget Buddy
-## Expense Tracker made from Material UI
+## Expense Tracker made from Material UI, Next.js
 
-npm install
+Read Me will be completed at a later date!
