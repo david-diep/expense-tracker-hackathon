@@ -124,11 +124,11 @@ export default function Index() {
     const accountsJSON = window.localStorage.getItem('accounts')
     const expensesJSON = window.localStorage.getItem('expenses')
     const newAccIdJSON = window.localStorage.getItem('newAccId')
-    setAccounts(JSON.parse(accountsJSON))
-    setExpenses(JSON.parse(expensesJSON))
-    console.log(expenses)
-    setNewAccId(JSON.parse(newAccIdJSON))
-
+    if (accountsJSON && expensesJSON && newAccIdJSON) {
+      setAccounts(JSON.parse(accountsJSON))
+      setExpenses(JSON.parse(expensesJSON))
+      setNewAccId(JSON.parse(newAccIdJSON))
+    }
   },[])
 
   useEffect(() => {
