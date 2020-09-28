@@ -187,7 +187,7 @@ export default function Index() {
 
   const editExpense = (accId, expenseId, expense) =>{
     setExpenses((prevExpenses) => {
-      const changeIndex = prevExpenses[accId].findIndex((expense) => expense.id === expenseId);
+      const changeIndex = prevExpenses[accId].findIndex((expense) => expense.expenseId === expenseId);
       prevExpenses[accId].splice(changeIndex, 1, expense);
       return { ...prevExpenses }
     })

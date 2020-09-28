@@ -165,15 +165,15 @@ export default function AccountTable(props) {
                       <TableCell component="th" id={labelId} scope="row">
                         {new Intl.DateTimeFormat().format(row.date)}
                       </TableCell>
-                      <TableCell >{row.name}</TableCell>
+                      <TableCell >{row.expName}</TableCell>
                       <TableCell >{row.description}</TableCell>
                       <TableCell >{row.category}</TableCell>
                       <TableCell align="right">{row.amount.toFixed(2)}</TableCell>
                       <TableCell>
-                        <IconButton>
+                        <IconButton onClick={() => props.handleEditExpense(row)}>
                           <EditIcon/>
                         </IconButton>
-                        <IconButton onClick={()=>props.deleteExpense(props.accountId,row.id)}>
+                        <IconButton onClick={()=>props.deleteExpense(props.accountId,row.expenseId)}>
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>
