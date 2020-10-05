@@ -54,8 +54,8 @@ Technologies Used
 1. Clone this repository
 
 ```shell
-git clone https://github.com/david-diep/kanban-hackathon.git
-cd kanban-hackathon
+git clone https://github.com/david-diep/expense-tracker-hackathon.git
+cd expense-tracker-hackathon
 ```
 2. Install dependencies with NPM
 
