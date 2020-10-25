@@ -9,7 +9,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Paper from "@material-ui/core/Paper";
-import moment from 'moment';
 
 
 function descendingComparator(a, b, orderBy) {
@@ -96,8 +95,10 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '60vh',
     maxHeight: '75vh'
   },
-  table: {
-    minWidth: 750,
+  [theme.breakpoints.up('md')]: {
+    table: {
+      minWidth: 750,
+    }
   },
   visuallyHidden: {
     border: 0,
@@ -125,18 +126,18 @@ export default function OverviewTable(props) {
     setOrderBy(property);
   };
 
-  const renderColGroup = ()=>{
-    return(
-      <colgroup>
-        <col style={{ width: '15%' }} />
-        <col style={{ width: '20%' }} />
-        <col style={{ width: '20%' }} />
-        <col style={{ width: '15%' }} />
-        <col style={{ width: '15%' }} />
-        <col style={{ width: '15%' }} />
-      </colgroup>
-    )
-  }
+  // const renderColGroup = ()=>{
+  //   return(
+  //     <colgroup>
+  //       <col style={{ width: '15%' }} />
+  //       <col style={{ width: '20%' }} />
+  //       <col style={{ width: '20%' }} />
+  //       <col style={{ width: '15%' }} />
+  //       <col style={{ width: '15%' }} />
+  //       <col style={{ width: '15%' }} />
+  //     </colgroup>
+  //   )
+  // }
 
   const renderTableBody = () => {
     if (props.mode==="Default"){
@@ -144,21 +145,21 @@ export default function OverviewTable(props) {
       <TableBody>
         {stableSort(props.rows, getComparator(order, orderBy))
           .map((row, index) => {
-            const labelId = `enhanced-table-checkbox-${index}`;
+
             return (
               <TableRow
                 hover
                 tabIndex={-1}
-                key={row.expenseId}
+                key={index}
               >
-                <TableCell component="th" id={labelId} scope="row">
-                  {moment(row.date).format('M/DD/YY')}
+                <TableCell component="th" scope="row">
+                  {row.date}
                 </TableCell>
                 <TableCell>{row.account}</TableCell>
                 <TableCell >{row.expName}</TableCell>
                 <TableCell >{row.description}</TableCell>
                 <TableCell >{row.category}</TableCell>
-                <TableCell align="right">{row.amount.toFixed(2)}</TableCell>
+                <TableCell align="right">{parseFloat(row.amount).toFixed(2)}</TableCell>
 
               </TableRow>
             );
@@ -171,20 +172,20 @@ export default function OverviewTable(props) {
         <TableBody>
           {stableSort(props.rows, getComparator(order, orderBy))
             .map((row, index) => {
-              const labelId = `enhanced-table-checkbox-${index}`;
+
               return (
                 <TableRow
                   hover
                   tabIndex={-1}
-                  key={row.expenseId}
+                  key={index}
                 >
-                  <TableCell component="th" id={labelId} scope="row">
-                    {moment(row.date).format('M/DD/YY')}
+                  <TableCell component="th" scope="row">
+                    {row.date}
                   </TableCell>
                   <TableCell>{row.account}</TableCell>
                   <TableCell >{row.expName}</TableCell>
                   <TableCell >{row.description}</TableCell>
-                  <TableCell align="right">{row.amount.toFixed(2)}</TableCell>
+                  <TableCell align="right">{parseFloat(row.amount).toFixed(2)}</TableCell>
 
                 </TableRow>
               );
@@ -206,7 +207,7 @@ export default function OverviewTable(props) {
             size="medium"
             aria-label="enhanced table"
           >
-            {renderColGroup()}
+            {/* {renderColGroup()} */}
             <EnhancedTableHead
               classes={classes}
               order={order}
