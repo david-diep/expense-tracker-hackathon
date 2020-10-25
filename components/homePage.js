@@ -20,8 +20,7 @@ const useStyles = makeStyles(() => ({
     marginTop: '15px'
   },
   formControl:{
-    display:'flex',
-    flexWrap:'nowrap'
+    fontSize:'3rem'
   }
 
 }));
@@ -65,18 +64,18 @@ export default function HomePage(props) {
 
     if (mode === "Default") {
       const accounts = Object.keys(props.expenses)
-      const reducer = (accumulator, expense) => accumulator + expense.amount;
+      const reducer = (accumulator, expense) => accumulator + parseFloat(expense.amount);
 
       for (const account of accounts) {
         totalCost+=props.expenses[account].reduce(reducer,0)
       }
       setTotal(totalCost)
 
-    } else if (mode === 'Category'){
+    } else if (mode === 'Category' ||mode === "Accounts"){
       const accounts = Object.keys(props.expenses)
       const reducer = (accumulator, expense) => {
         if(expense.category===secondary){
-          return accumulator + expense.amount;
+          return accumulator + parseFloat(expense.amount);
         } else{
           return accumulator;
         }
@@ -145,6 +144,7 @@ export default function HomePage(props) {
           id="overview-sort-2"
           value={secondary}
           onChange={(event) => setSecondary(event.target.value)}
+
         >
 
           <MenuItem value='Food'>Food</MenuItem>
@@ -183,7 +183,8 @@ export default function HomePage(props) {
               labelId="select-label"
               id="overview-sort"
               value={mode}
-              onChange={(event)=>setMode(event.target.value)}
+              onChange={(event)=>setMode(event.target.value)
+              }
             >
               <MenuItem value={'Default'}>Total</MenuItem>
               <MenuItem value={'Category'}>Category</MenuItem>
@@ -191,7 +192,7 @@ export default function HomePage(props) {
             </Select>
 
           </FormControl>
-          <FormControl style={{marginLeft:'5px'}}>
+          <FormControl className={classes.formControl} style={{marginLeft:'5px'}}>
 
             {renderSecondSelect()}
           </FormControl>

@@ -111,7 +111,7 @@ export default function Index() {
 
   const [accounts, setAccounts] = React.useState({"1":{ accName: "Default", id: 1 }});
   const [expenses, setExpenses] = React.useState({"1": [
-    { expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date(), category: "Food", amount: 6.00 }]})
+    { expenseId: 1, expName: "Lunch", description: "McDonalds", date: '10/12/2020', category: "Food", amount: 6.00 }]})
   const [newAccId, setNewAccId] = React.useState(2);
   const [newExpenseId, setNewExpenseId]= React.useState(2);
 

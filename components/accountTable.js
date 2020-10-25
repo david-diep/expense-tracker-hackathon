@@ -12,7 +12,6 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Paper from "@material-ui/core/Paper";
-import moment from 'moment';
 
 
 function descendingComparator(a, b, orderBy) {
@@ -99,9 +98,11 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '60vh',
     maxHeight: '75vh'
   },
+  [theme.breakpoints.up('md')]: {
   table: {
     minWidth: 750,
-  },
+  }
+},
   visuallyHidden: {
     border: 0,
     clip: "rect(0 0 0 0)",
@@ -163,12 +164,12 @@ export default function AccountTable(props) {
                       key={row.expenseId}
                     >
                       <TableCell component="th" id={labelId} scope="row">
-                        {moment(row.date).format('MM/DD/YY')}
+                        {row.date}
                       </TableCell>
                       <TableCell >{row.expName}</TableCell>
                       <TableCell >{row.description}</TableCell>
                       <TableCell >{row.category}</TableCell>
-                      <TableCell align="right">{row.amount.toFixed(2)}</TableCell>
+                      <TableCell align="right">{parseFloat(row.amount).toFixed(2)}</TableCell>
                       <TableCell>
                         <IconButton onClick={() => props.handleEditExpense(row)}>
                           <EditIcon/>
