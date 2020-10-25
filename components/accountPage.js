@@ -69,7 +69,6 @@ export default function AccountPage(props){
   ];
 
   const rows = props.expenses.map((expense) => {
-    console.log(expense)
     return {
       expenseId: expense.expenseId,
       date: expense.date,
@@ -101,7 +100,6 @@ export default function AccountPage(props){
   }
 
 
-
   const handleEditExpense = (expense) => {
 
     setEditFocus(expense);
@@ -109,8 +107,20 @@ export default function AccountPage(props){
 
   }
 
-
-
+  const renderEditModal = () => {
+    if(editExpenseModal){
+      return (<>
+        <EditExpenseModal
+          editFocus={editFocus}
+          setEditFocus={setEditFocus}
+          setEditExpenseModal={setEditExpenseModal}
+          editExpenseModal={editExpenseModal}
+          editExpense={props.editExpense}
+          account={props.account}
+        />
+      </>)
+    }
+  }
 
   const renderTitle = () => {
     if(!editName){
@@ -163,13 +173,7 @@ export default function AccountPage(props){
           addExpense={props.addExpense}
           setNewExpenseModal={setNewExpenseModal}
           account={props.account}/>
-      {<EditExpenseModal
-        editFocus={editFocus}
-        setEditFocus={setEditFocus}
-        setEditExpenseModal={setEditExpenseModal}
-        editExpenseModal={editExpenseModal}
-        editExpense={props.editExpense}
-      /> && editExpenseModal}
+      {renderEditModal()}
 
   </Box>
   )

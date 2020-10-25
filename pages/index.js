@@ -294,7 +294,6 @@ export default function Index() {
               <HomeIcon />
             </ListItemIcon>
           </ListItem>
-          {/* nested list for save settings */}
           <Divider />
           <Button
             onClick={()=>addAccount()}

@@ -172,15 +172,15 @@ export default function OverviewTable(props) {
         <TableBody>
           {stableSort(props.rows, getComparator(order, orderBy))
             .map((row, index) => {
-              const labelId = `enhanced-table-checkbox-${index}`;
+
               return (
                 <TableRow
                   hover
                   tabIndex={-1}
-                  key={row.expenseId}
+                  key={index}
                 >
-                  <TableCell component="th" id={labelId} scope="row">
-                    {moment(row.date).format('M/DD/YY')}
+                  <TableCell component="th" scope="row">
+                    {row.date}
                   </TableCell>
                   <TableCell>{row.account}</TableCell>
                   <TableCell >{row.expName}</TableCell>

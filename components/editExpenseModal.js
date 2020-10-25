@@ -1,11 +1,11 @@
 import Modal from '@material-ui/core/Modal';
-import { useForm } from "react-hook-form";
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from "@material-ui/core/Paper";
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import DayjsUtils from '@date-io/dayjs';
+import dayjs from 'dayjs'
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
@@ -44,40 +44,47 @@ const useStyles = makeStyles(() => ({
     width: '70%',
     paddingTop: '30px'
   },
-  formContainer: {
-
+  modalItem: {
+    marginTop: '5px',
+  },
+  smallFont: {
+    fontSize: '.8rem'
+  },
+  bigFont: {
+    fontSize: '1.2rem'
   }
 }));
 
-export default function editExpenseModal(props) {
+export default function EditExpenseModal(props) {
   const classes = useStyles();
-  const { register, handleSubmit } = useForm()
+  const [expenseName, setExpenseName] = React.useState(props.editFocus.expName)
+  const [description, setDescription] = React.useState(props.editFocus.description)
+  const [category, setCategory] = React.useState(props.editFocus.category)
+  const [selectedDate, handleDateChange] = React.useState(new Date(props.editFocus.date));
   const [value, setValue] = React.useState(props.editFocus.amount);
-  const [selectedDate, handleDateChange] = React.useState(new Date());
 
-  const editExpenseSubmit = (data) => {
+  const editExpenseSubmit = () => {
     props.editExpense(props.account.id, props.editFocus.expenseId, {
       expenseId: props.editFocus.expenseId,
-      expName: data.expenseName,
-      description: data.description,
-      date: selectedDate,
-      category: data.category,
-      amount: value
+      expName: expenseName,
+      description: description,
+      date: dayjs(selectedDate).format('MM/DD/YYYY'),
+      category: category,
+      amount: parseFloat(value).toFixed(2)
     })
-    handleDateChange(new Date());
     setValue(null);
     props.setEditFocus(null);
     props.setEditExpenseModal(false);
   }
-
-  return (<>
+  console.log(props.editFocus)
+  return (
     <Modal
       open={props.editExpenseModal}
       onClose={() => props.setEditExpenseModal(false)}
     >
       <Paper className={classes.modal}>
 
-        <form className={classes.modalContainer} onSubmit={handleSubmit(editExpenseSubmit)}>
+        <form className={classes.modalContainer} onSubmit={editExpenseSubmit}>
           <h2>Edit Expense</h2>
 
           <MuiPickersUtilsProvider utils={DayjsUtils}>
@@ -87,32 +94,57 @@ export default function editExpenseModal(props) {
               format="MM/DD/YYYY"
               margin="normal"
               value={selectedDate}
-              onChange={date => handleDateChange(date)}
+              onChange={handleDateChange}
               id="date-picker"
               label="Date"
-              style={{ fontSize: '2rem' }}
+              InputProps={{
+                classes: {
+                  input: classes.bigFont,
+                },
+              }}
+              InputLabelProps={{
+                classes: {
+                  root: classes.bigFont,
+                }
+              }}
             />
           </MuiPickersUtilsProvider>
 
           <TextField
             id='expenseName'
             name='expenseName'
-            defaultValue={props.editFocus.expName}
-            inputRef={register}
+            InputProps={{
+              classes: {
+                input: classes.bigFont,
+              },
+            }}
             InputLabelProps={{
+              classes: {
+                root: classes.bigFont,
+              },
               shrink: true,
             }}
-            style={{ fontSize: '2rem' }}
+            value={expenseName}
+            onChange={(event) => setExpenseName(event.target.value)}
+
             label="Expense Name">
           </TextField>
 
           <TextField
             id='description'
             name='description'
-            defaultValue={props.editFocus.description}
-            ref={register}
-            style={{ fontSize: '2rem' }}
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+            className={classes.modalItem}
+            InputProps={{
+              classes: {
+                input: classes.bigFont,
+              },
+            }}
             InputLabelProps={{
+              classes: {
+                root: classes.bigFont,
+              },
               shrink: true,
             }}
             label="Description"
@@ -121,14 +153,23 @@ export default function editExpenseModal(props) {
 
           <TextField
             select
-            inputRef={register}
+            value={category}
+            onChange={(event) => setCategory(event.target.value)}
             id='category'
             name='category'
-            defaultValue={props.editFocus.category}
+            InputProps={{
+              classes: {
+                input: classes.bigFont,
+              },
+            }}
             InputLabelProps={{
+              classes: {
+                root: classes.bigFont,
+              },
               shrink: true,
             }}
-            style={{ fontSize: '1rem' }}
+            className={classes.modalItem}
+
             label="Category">
             <MenuItem value='Food'>Food</MenuItem>
             <MenuItem value='Entertainment'>Entertainment</MenuItem>
@@ -145,18 +186,28 @@ export default function editExpenseModal(props) {
             decimalCharacter="."
             digitGroupSeparator=","
             onChange={(event, value) => setValue(value)}
+            modifyValueOnWheel={false}
             currencySymbol="$"
+            className={`${classes.modalItem}`}
+            InputProps={{
+              classes: {
+                input: classes.bigFont,
+              },
+            }}
+            InputLabelProps={{
+              classes: {
+                root: classes.bigFont,
+              },
 
+            }}
           />
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
             <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Edit</Button>
-            <Button onClick={() => props.setEditExpenseModal(false)} type="reset" style={{ background: '#FF0000', marginLeft: '5px' }}>Cancel</Button>
+            <Button onClick={() => { props.setEditExpenseModal(false); }} type="reset" style={{ background: '#FF0000', marginLeft: '5px' }}>Cancel</Button>
           </div>
         </form>
 
       </Paper>
     </Modal>
-
-
-  </>)
+  )
 }
