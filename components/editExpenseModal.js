@@ -4,8 +4,9 @@ import Paper from "@material-ui/core/Paper";
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
-import DayjsUtils from '@date-io/dayjs';
-import dayjs from 'dayjs'
+import MomentUtils from '@date-io/moment';
+import moment from 'moment';
+
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
@@ -60,7 +61,7 @@ export default function EditExpenseModal(props) {
   const [expenseName, setExpenseName] = React.useState(props.editFocus.expName)
   const [description, setDescription] = React.useState(props.editFocus.description)
   const [category, setCategory] = React.useState(props.editFocus.category)
-  const [selectedDate, handleDateChange] = React.useState(new Date(props.editFocus.date));
+  const [selectedDate, handleDateChange] = React.useState(props.editFocus.date);
   const [value, setValue] = React.useState(props.editFocus.amount);
 
   const editExpenseSubmit = () => {
@@ -68,7 +69,7 @@ export default function EditExpenseModal(props) {
       expenseId: props.editFocus.expenseId,
       expName: expenseName,
       description: description,
-      date: dayjs(selectedDate).format('MM/DD/YYYY'),
+      date: new Date(moment(selectedDate).format('MM/DD/YYYY')),
       category: category,
       amount: parseFloat(value).toFixed(2)
     })
@@ -87,7 +88,7 @@ export default function EditExpenseModal(props) {
         <form className={classes.modalContainer} onSubmit={editExpenseSubmit}>
           <h2>Edit Expense</h2>
 
-          <MuiPickersUtilsProvider utils={DayjsUtils}>
+          <MuiPickersUtilsProvider utils={MomentUtils}>
             <KeyboardDatePicker
               disableToolbar
               variant="inline"

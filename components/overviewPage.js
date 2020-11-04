@@ -25,44 +25,23 @@ const useStyles = makeStyles(() => ({
 
 }));
 
-export default function HomePage(props) {
+export default function OverviewPage(props) {
   const classes = useStyles();
-  const [mode, setMode] = React.useState("Default")
-  const [secondary, setSecondary] = React.useState("Food")
+  const [mode, setMode] = React.useState("default")
+  const [category, setCategory] = React.useState("Food")
   const [total, setTotal] = React.useState();
+  const [dateRange, setDateRange] = React.useState('day');
+  const [date, setDate] = React.useState(new Date());
 
   React.useEffect(()=>{
     calculateTotal();
   })
 
-  const getTableColumns = () => {
-    if (mode === "Default") {
-      const columns = [
-        { id: 'date', label: "Date" },
-        { id: 'account', label: "Account" },
-        { id: 'expName', label: 'Name' },
-        { id: 'description', label: 'Description' },
-        { id: 'category', label: 'Category' },
-        { id: 'amount', rightAlign: true, label: 'Amount' },
-      ];
-      return columns;
-    } else if (mode ==="Category"){
-      const columns =[
-        { id: 'date', label: "Date" },
-        { id: 'account', label: "Account" },
-        { id: 'expName', label: 'Name' },
-        { id: 'description', label: 'Description' },
-        { id: 'amount', rightAlign: true, label: 'Amount' },
-      ];
-      return columns;
-    }
-  }
-
   const calculateTotal = () =>{
 
     let totalCost = 0;
 
-    if (mode === "Default") {
+    if (mode === "default") {
       const accounts = Object.keys(props.expenses)
       const reducer = (accumulator, expense) => accumulator + parseFloat(expense.amount);
 
@@ -71,7 +50,7 @@ export default function HomePage(props) {
       }
       setTotal(totalCost)
 
-    } else if (mode === 'Category' ||mode === "Accounts"){
+    } else if (mode === 'category' ||mode === "Accounts"){
       const accounts = Object.keys(props.expenses)
       const reducer = (accumulator, expense) => {
         if(expense.category===secondary){
@@ -90,7 +69,7 @@ export default function HomePage(props) {
 
   const getTableRows = () => {
     let rows = [];
-    if (mode === "Default") {
+    if (mode === "default") {
       const accounts = Object.keys(props.expenses)
 
 
@@ -110,7 +89,8 @@ export default function HomePage(props) {
       }
 
       return rows;
-    } else if (mode === 'Category') {
+
+    } else if (mode === 'category') {
       const accounts = Object.keys(props.expenses)
 
       for (const account of accounts) {
@@ -130,21 +110,26 @@ export default function HomePage(props) {
       rows=rows.filter(expense=> expense!==undefined)
       return rows;
 
+    } else if (mode ==='date'){
+        if(dateRange==='month'){
+
+        }else if (dateRange==='week'){
+
+        }else{ //day
+
+        }
     }
   }
 
   const renderSecondSelect = () =>{
 
-    if(mode ==='Category'){
+    if(mode ==='category'){
 
       return(<>
-        <InputLabel id="overview-sort">Category</InputLabel>
+        <InputLabel id="category-sort">Category</InputLabel>
         <Select
-          labelId="select-label-2"
-          id="overview-sort-2"
           value={secondary}
           onChange={(event) => setSecondary(event.target.value)}
-
         >
 
           <MenuItem value='Food'>Food</MenuItem>
@@ -157,20 +142,19 @@ export default function HomePage(props) {
         </Select></>
       )
     }
-    // else if(mode ==='Date'){
-    //   return(
-    //     <Select
-    //       labelId="select-label-2"
-    //       id="overview-sort-2"
-    //       value={secondary}
-    //       onChange={(event) => setMode(event.target.value)}
-    //     >
-    //       <MenuItem value={'Default'}>Total</MenuItem>
-    //       <MenuItem value={'Category'}>Category</MenuItem>
-    //       <MenuItem value={'Date'}>Date</MenuItem>
-    //     </Select>
-    //   )
-    // }
+    else if(mode ==='Date'){
+      return(
+        <InputLabel id="date-sort">Date Range</InputLabel>
+        <Select
+          value={secondary}
+          onChange={(event) => setMode(event.target.value)}
+        >
+          <MenuItem value={'day'}>Day</MenuItem>
+          <MenuItem value={'week'}>Week</MenuItem>
+          <MenuItem value={'month'}>Month</MenuItem>
+        </Select>
+      )
+    }
   }
   return(
     <Box className={classes.root}>
@@ -186,8 +170,8 @@ export default function HomePage(props) {
               onChange={(event)=>setMode(event.target.value)
               }
             >
-              <MenuItem value={'Default'}>Total</MenuItem>
-              <MenuItem value={'Category'}>Category</MenuItem>
+              <MenuItem value={'default'}>Total</MenuItem>
+              <MenuItem value={'category'}>Category</MenuItem>
               {/* <MenuItem value={'Date'}>Date</MenuItem> */}
             </Select>
 
@@ -203,7 +187,7 @@ export default function HomePage(props) {
       </div>
       <Box style={{marginTop:'15px'}}>
         <OverviewTable
-          columns={getTableColumns()}
+          // columns={getTableColumns()}
           rows={getTableRows()}
           mode={mode}
         />

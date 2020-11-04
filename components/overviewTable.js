@@ -9,7 +9,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Paper from "@material-ui/core/Paper";
-
+import moment from 'moment'
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -113,6 +113,28 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const getTableColumns = (mode) => {
+  let columns;
+  if (mode === "default" ||mode ==="date") {
+    columns = [
+      { id: 'date', label: "Date" },
+      { id: 'account', label: "Account" },
+      { id: 'expName', label: 'Name' },
+      { id: 'description', label: 'Description' },
+      { id: 'category', label: 'Category' },
+      { id: 'amount', rightAlign: true, label: 'Amount' },
+    ];
+  } else if (mode === "category") {
+    columns = [
+      { id: 'date', label: "Date" },
+      { id: 'account', label: "Account" },
+      { id: 'expName', label: 'Name' },
+      { id: 'description', label: 'Description' },
+      { id: 'amount', rightAlign: true, label: 'Amount' },
+    ];
+  }
+  return columns;
+}
 
 export default function OverviewTable(props) {
   const classes = useStyles();
@@ -140,7 +162,7 @@ export default function OverviewTable(props) {
   // }
 
   const renderTableBody = () => {
-    if (props.mode==="Default"){
+    if (props.mode === "default" || props.mode === "date"){
       return (
       <TableBody>
         {stableSort(props.rows, getComparator(order, orderBy))
@@ -153,7 +175,7 @@ export default function OverviewTable(props) {
                 key={index}
               >
                 <TableCell component="th" scope="row">
-                  {row.date}
+                  {moment(row.date).format('M/DD/YYYY')}
                 </TableCell>
                 <TableCell>{row.account}</TableCell>
                 <TableCell >{row.expName}</TableCell>
@@ -167,7 +189,7 @@ export default function OverviewTable(props) {
 
       </TableBody>
         )
-    } else if (props.mode ==="Category"){
+    } else if (props.mode ==="category"){
       return(
         <TableBody>
           {stableSort(props.rows, getComparator(order, orderBy))
@@ -180,7 +202,8 @@ export default function OverviewTable(props) {
                   key={index}
                 >
                   <TableCell component="th" scope="row">
-                    {row.date}
+                    {/* {row.date} */}
+                    {moment(row.date).format('M/DD/YYYY')}
                   </TableCell>
                   <TableCell>{row.account}</TableCell>
                   <TableCell >{row.expName}</TableCell>
@@ -214,7 +237,7 @@ export default function OverviewTable(props) {
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
               rowCount={props.rows.length}
-              columns={props.columns}
+              columns={getTableColumns(props.mode)}
             />
             {renderTableBody()}
           </Table>

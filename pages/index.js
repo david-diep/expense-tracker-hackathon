@@ -21,7 +21,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import AccountListItem from '../components/accountListItem';
 import AccountPage from '../components/accountPage';
-import HomePage from '../components/homePage';
+import OverviewPage from '../components/overviewPage';
 
 const drawerWidth = 240;
 
@@ -111,7 +111,7 @@ export default function Index() {
 
   const [accounts, setAccounts] = React.useState({"1":{ accName: "Default", id: 1 }});
   const [expenses, setExpenses] = React.useState({"1": [
-    { expenseId: 1, expName: "Lunch", description: "McDonalds", date: '10/12/2020', category: "Food", amount: 6.00 }]})
+    { expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date(), category: "Food", amount: 6.00 }]})
   const [newAccId, setNewAccId] = React.useState(2);
   const [newExpenseId, setNewExpenseId]= React.useState(2);
 
@@ -231,7 +231,7 @@ export default function Index() {
       />
     } else{
       return (
-        <HomePage
+        <OverviewPage
           expenses={expenses}
           accounts={accounts}
         />
