@@ -38,7 +38,7 @@ export default function OverviewPage(props) {
   const [category, setCategory] = React.useState("")
   const [total, setTotal] = React.useState();
   const [dateRange, setDateRange] = React.useState('day');
-  const [date, setDate] = React.useState(new Date());
+  const [date, setDate] = React.useState(new moment());
 
   React.useEffect(()=>{
     calculateTotal();
@@ -72,21 +72,19 @@ export default function OverviewPage(props) {
 
     }
       else if (mode ==='date'){
-        let endDate;
-        const tempMoment = new moment(date)
-
+        let endDate = new moment(date)
+        const startDate = new moment(date);
+        startDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
         if (dateRange === 'month') {
-          tempMoment.add(1, "months")
-          endDate = new Date(tempMoment.format('MM-DD-YYYY'))
+          endDate.add(1, "months")
         } else if (dateRange === 'week') {
-          tempMoment.add(1, "weeks")
-          endDate = new Date(tempMoment.format('MM-DD-YYYY'))
+          endDate.add(1, "weeks")
         } else { //dateRange === 'day'
-          tempMoment.add(1, "day")
-          endDate = new Date(tempMoment.format('MM-DD-YYYY'))
+          endDate.add(1, "day")
         }
         const reducer = (accumulator, expense) => {
-          if (date <= expense.date <= endDate) {
+
+          if (moment(expense.date).isSameOrAfter(startDate) && moment(endDate).isSameOrAfter(expense.date)) {
             return accumulator + parseFloat(expense.amount);
           } else {
             return accumulator;
@@ -107,7 +105,7 @@ export default function OverviewPage(props) {
     let rows = [];
     const accounts = Object.keys(props.expenses)
 
-    if (mode === "default" || mode === 'category' && category === ""|| mode ==='date' ) {
+    if (mode === "default" || mode === 'category' && category === "") {
 
       for (const account of accounts) {
 
@@ -144,29 +142,31 @@ export default function OverviewPage(props) {
 
     }
     else if (mode ==='date'){
-      let endDate;
-      const tempMoment = new moment();
+      var startDate = new moment(date);
+      startDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      let endDate = new moment(date);
       if (dateRange === 'month') {
-        tempMoment.add(1, "months")
-        endDate = new Date(tempMoment.format('MM-DD-YYYY'))
+        endDate.add(1, "months")
       } else if (dateRange === 'week') {
-        tempMoment.add(1, "weeks")
-        endDate = new Date(tempMoment.format('MM-DD-YYYY'))
+        endDate.add(1, "weeks")
       } else { //dateRange === 'day'
-        tempMoment.add(1, "day")
-        endDate = new Date(tempMoment.format('MM-DD-YYYY'))
+        endDate.add(1, "day")
       }
-      console.log("date",date)
-      console.log("endDate",endDate)
+
       for (const account of accounts) {
+
         rows = rows.concat(props.expenses[account].map((expense) => {
-          if (date <= expense.date <= endDate) {
+          const expenseDate = new Date(expense.date)
+          console.log('ed',expenseDate)
+          console.log('d',date)
+          if (moment(expense.date).isSameOrAfter(startDate) && moment(endDate).isSameOrAfter(expense.date)) {
             return {
               account: props.accounts[account].accName,
               id: expense.expenseId,
               date: expense.date,
               expName: expense.expName,
               description: expense.description,
+              category: expense.category,
               amount: expense.amount
             }
           }
