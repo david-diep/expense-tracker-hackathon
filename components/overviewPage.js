@@ -11,7 +11,7 @@ import {
   DatePicker
 } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
-import moment from '@date-io/moment'
+import moment from 'moment'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -49,7 +49,7 @@ export default function OverviewPage(props) {
     let totalCost = 0;
 
     if (mode === "default" || mode === 'category' && category==="") {
-      const accounts = Object.keys(props.expenses)
+
       const reducer = (accumulator, expense) => accumulator + parseFloat(expense.amount);
 
       for (const account of accounts) {
@@ -57,7 +57,7 @@ export default function OverviewPage(props) {
       }
 
     } else if (mode === 'category' ){
-      const accounts = Object.keys(props.expenses)
+
       const reducer = (accumulator, expense) => {
       if(expense.category===category){
         return accumulator + parseFloat(expense.amount);
@@ -71,21 +71,20 @@ export default function OverviewPage(props) {
       }
 
     }
-      else if (mode ==='date '){
+      else if (mode ==='date'){
         let endDate;
-      console.log("date", date)
-      console.log("endDate", endDate)
-        if (dateRange === 'month') {
-          const tempMoment = moment(date).add(1, "months")
-          endDate = new Date(tempMoment.format('l'))
-        } else if (dateRange === 'week') {
-          const tempMoment = moment(date).add(1, "weeks")
-          endDate = new Date(tempMoment.format('l'))
-        } else { //dateRange === 'day'
-          const tempMoment = moment(date).add(1, "day")
-          endDate = new Date(tempMoment.format('l'))
-        }
+        const tempMoment = new moment(date)
 
+        if (dateRange === 'month') {
+          tempMoment.add(1, "months")
+          endDate = new Date(tempMoment.format('MM-DD-YYYY'))
+        } else if (dateRange === 'week') {
+          tempMoment.add(1, "weeks")
+          endDate = new Date(tempMoment.format('MM-DD-YYYY'))
+        } else { //dateRange === 'day'
+          tempMoment.add(1, "day")
+          endDate = new Date(tempMoment.format('MM-DD-YYYY'))
+        }
         const reducer = (accumulator, expense) => {
           if (date <= expense.date <= endDate) {
             return accumulator + parseFloat(expense.amount);
@@ -146,16 +145,16 @@ export default function OverviewPage(props) {
     }
     else if (mode ==='date'){
       let endDate;
-
+      const tempMoment = new moment();
       if (dateRange === 'month') {
-        const tempMoment = moment(date).add(1, "months")
-        endDate = new Date(tempMoment.format('l'))
+        tempMoment.add(1, "months")
+        endDate = new Date(tempMoment.format('MM-DD-YYYY'))
       } else if (dateRange === 'week') {
-        const tempMoment = moment(date).add(1, "weeks")
-        endDate = new Date(tempMoment.format('l'))
+        tempMoment.add(1, "weeks")
+        endDate = new Date(tempMoment.format('MM-DD-YYYY'))
       } else { //dateRange === 'day'
-        const tempMoment = moment(date).add(1, "day")
-        endDate = new Date(tempMoment.format('l'))
+        tempMoment.add(1, "day")
+        endDate = new Date(tempMoment.format('MM-DD-YYYY'))
       }
       console.log("date",date)
       console.log("endDate",endDate)

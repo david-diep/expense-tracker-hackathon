@@ -11,7 +11,7 @@
     "@unicef/material-ui-currency-textfield": "^0.8.6",
     "clsx": "latest",
     "dayjs": "^1.9.1",
-    "moment": "^2.29.0",
+    "moment": "^2.29.1",
     "next": "latest",
     "prop-types": "latest",
     "react": "latest",
