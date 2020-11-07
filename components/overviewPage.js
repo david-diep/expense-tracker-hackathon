@@ -28,6 +28,9 @@ const useStyles = makeStyles(() => ({
   },
   formControl:{
     fontSize:'3rem'
+  },
+  bigFont: {
+    fontSize: '1.2rem'
   }
 
 }));
@@ -72,9 +75,9 @@ export default function OverviewPage(props) {
 
     }
       else if (mode ==='date'){
-        let endDate = new moment(date)
         const startDate = new moment(date);
         startDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+        const endDate = new moment(startDate)
         if (dateRange === 'month') {
           endDate.add(1, "months")
         } else if (dateRange === 'week') {
@@ -82,8 +85,8 @@ export default function OverviewPage(props) {
         } else { //dateRange === 'day'
           endDate.add(1, "day")
         }
-        const reducer = (accumulator, expense) => {
 
+        const reducer = (accumulator, expense) => {
           if (moment(expense.date).isSameOrAfter(startDate) && moment(endDate).isSameOrAfter(expense.date)) {
             return accumulator + parseFloat(expense.amount);
           } else {
@@ -95,6 +98,7 @@ export default function OverviewPage(props) {
           totalCost += props.expenses[account].reduce(reducer, 0)
         }
       }
+
     setTotal(totalCost);
     }
 
@@ -144,7 +148,7 @@ export default function OverviewPage(props) {
     else if (mode ==='date'){
       var startDate = new moment(date);
       startDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-      let endDate = new moment(date);
+      let endDate = new moment(startDate);
       if (dateRange === 'month') {
         endDate.add(1, "months")
       } else if (dateRange === 'week') {
@@ -156,9 +160,6 @@ export default function OverviewPage(props) {
       for (const account of accounts) {
 
         rows = rows.concat(props.expenses[account].map((expense) => {
-          const expenseDate = new Date(expense.date)
-          console.log('ed',expenseDate)
-          console.log('d',date)
           if (moment(expense.date).isSameOrAfter(startDate) && moment(endDate).isSameOrAfter(expense.date)) {
             return {
               account: props.accounts[account].accName,
@@ -241,7 +242,7 @@ export default function OverviewPage(props) {
           value={date}
           onChange={date => setDate(date)}
           id="date-picker"
-          label="Date"
+          label={dateRange==='week'? "Week Starting Date" : 'Date'}
           InputProps={{
             classes: {
               input: classes.bigFont,
@@ -258,10 +259,11 @@ export default function OverviewPage(props) {
         <>
           <FormControl className={classes.formControl} style={{ marginLeft: '10px',minWidth:"120px" }}>
 
-            <InputLabel id="date-sort" style={{ minWidth: "60px" }}>Date Range</InputLabel>
+            <InputLabel id="date-sort" style={{ minWidth: "60px" }} className={classes.bigFont}>Date Range</InputLabel>
             <Select
               value={dateRange}
               onChange={(event) => setDateRange(event.target.value)}
+              className={classes.bigFont}
             >
               <MenuItem value={'day'}>Day</MenuItem>
               <MenuItem value={'week'}>Week</MenuItem>
@@ -284,8 +286,9 @@ export default function OverviewPage(props) {
       <div name="row-options" className={classes.titleRow}>
         <div name="options" style={{display:'flex', alignItems:'center'}}>
           <FormControl className={classes.formControl} style={{ minWidth: "80px" }}>
-            <InputLabel id="overview-sort">View</InputLabel>
+            <InputLabel id="overview-sort" className={classes.bigFont}>View</InputLabel>
             <Select
+              className={classes.bigFont}
               labelId="select-label"
               id="overview-sort"
               value={mode}

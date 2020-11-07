@@ -288,7 +288,7 @@ export default function Index() {
           </div>
           <Divider />
           <ListItem button onClick={()=>goHome()}>
-            <ListItemText primary = {'Home'}>
+            <ListItemText primary = {'Overview'}>
             </ListItemText>
             <ListItemIcon>
               <HomeIcon />
