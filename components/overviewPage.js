@@ -1,3 +1,4 @@
+import React from 'react';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -185,9 +186,9 @@ export default function OverviewPage(props) {
 
       return(
         <FormControl className={classes.formControl} style={{ marginLeft: '10px', minWidth: "120px" }}>
-          <InputLabel id="select-category">Category</InputLabel>
+          <InputLabel id="select-category" className={classes.bigFont}>Category</InputLabel>
           <Select
-
+            className={classes.bigFont}
             value={category}
             onChange={(event) => setCategory(event.target.value)}
           >
