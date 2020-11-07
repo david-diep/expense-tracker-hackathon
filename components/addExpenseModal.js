@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import  MomentUtils from '@date-io/moment';
-import moment from '@date-io/moment'
+import moment from 'moment'
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
@@ -59,9 +59,9 @@ export default function addExpenseModal(props){
   const classes = useStyles();
   const [expenseName, setExpenseName] = React.useState('')
   const [description, setDescription] = React.useState('')
-  const [category, setCategory] = React.useState()
+  const [category, setCategory] = React.useState('')
   const [selectedDate, handleDateChange] = React.useState(new Date());
-  const [value, setValue] = React.useState();
+  const [value, setValue] = React.useState(0);
 
   const newExpenseSubmit = () => {
     props.addExpense(props.account.id, {
@@ -74,7 +74,8 @@ export default function addExpenseModal(props){
     setValue(null);
     props.setNewExpenseModal(false);
     handleDateChange(new Date());
-    setValue(null);
+    setCategory('')
+    setValue(0);
   }
 
   return (
@@ -171,6 +172,9 @@ export default function addExpenseModal(props){
             className={classes.modalItem}
 
             label="Category">
+            <MenuItem value="">
+
+            </MenuItem>
             <MenuItem value='Food'>Food</MenuItem>
             <MenuItem value='Entertainment'>Entertainment</MenuItem>
             <MenuItem value='Clothing'>Clothing</MenuItem>
@@ -198,6 +202,7 @@ export default function addExpenseModal(props){
               classes: {
                 root: classes.bigFont,
               },
+              shrink: true,
 
             }}
           />
