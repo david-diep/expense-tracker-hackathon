@@ -12,7 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Paper from "@material-ui/core/Paper";
-
+import moment from 'moment'
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -164,7 +164,7 @@ export default function AccountTable(props) {
                       key={row.expenseId}
                     >
                       <TableCell component="th" id={labelId} scope="row">
-                        {row.date}
+                        {moment(row.date).format('M/DD/YYYY')}
                       </TableCell>
                       <TableCell >{row.expName}</TableCell>
                       <TableCell >{row.description}</TableCell>

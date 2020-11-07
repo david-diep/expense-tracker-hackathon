@@ -4,8 +4,8 @@ import Paper from "@material-ui/core/Paper";
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
-import  DayjsUtils from '@date-io/dayjs';
-import dayjs from 'dayjs'
+import  MomentUtils from '@date-io/moment';
+import moment from '@date-io/moment'
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
@@ -67,7 +67,7 @@ export default function addExpenseModal(props){
     props.addExpense(props.account.id, {
       expName: expenseName,
       description: description,
-      date: dayjs(selectedDate).format('MM/DD/YYYY'),
+      date: new Date(moment(selectedDate).format('MM/DD/YYYY')),
       category: category,
       amount: parseFloat(value).toFixed(2)
     })
@@ -87,14 +87,14 @@ export default function addExpenseModal(props){
         <form className={classes.modalContainer} onSubmit={newExpenseSubmit}>
           <h2>Add New Expense</h2>
 
-          <MuiPickersUtilsProvider utils={DayjsUtils}>
+          <MuiPickersUtilsProvider utils={MomentUtils}>
             <KeyboardDatePicker
-              disableToolbar
-              variant="inline"
+              clearable
+              // variant="inline"
               format="MM/DD/YYYY"
               margin="normal"
               value={selectedDate}
-              onChange={handleDateChange}
+              onChange={date => handleDateChange(date)}
               id="date-picker"
               label="Date"
               InputProps={{
