@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 import AddExpenseModal from './addExpenseModal'
 import EditExpenseModal from './editExpenseModal'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((style) => ({
   root:{
     width:'95%'
   },
@@ -44,9 +44,7 @@ const useStyles = makeStyles(() => ({
     width:'70%',
     paddingTop:'30px'
   },
-  formContinaer: {
 
-  }
 }));
 
 export default function AccountPage(props){
