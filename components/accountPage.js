@@ -12,10 +12,19 @@ import { useEffect } from 'react';
 import AddExpenseModal from './addExpenseModal'
 import EditExpenseModal from './editExpenseModal'
 
-const useStyles = makeStyles((style) => ({
-  root:{
-    width:'95%'
+const useStyles = makeStyles((theme) => ({
+  [theme.breakpoints.up('sm')]: {
+    root: {
+      width: '95%'
+    },
   },
+  [theme.breakpoints.down('sm')]: {
+    root: {
+      width: '98%',
+      paddingTop: '30px'
+    }
+  }
+  ,
   title:{
     display: 'flex',
     alignItems: 'center',
