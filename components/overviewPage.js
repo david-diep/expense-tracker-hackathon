@@ -14,14 +14,26 @@ import {
 import MomentUtils from '@date-io/moment';
 import moment from 'moment'
 
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '95%'
-  },
+const useStyles = makeStyles((theme) => ({
+
+    [theme.breakpoints.up('sm')]: {
+      root:{
+        width: '95%'
+      },
+      titleRow:{
+        flexWrap: 'nowrap',
+      }
+    },
+    [theme.breakpoints.down('sm')]:{
+      root: {
+        width: '98%',
+        paddingTop:'30px'
+      }
+    }
+  ,
   titleRow: {
     display: 'flex',
     justifyContent: 'space-between',
-    flexWrap: 'nowrap',
     alignItems: 'center'
   },
   tableContainer: {
@@ -76,11 +88,12 @@ export default function OverviewPage(props) {
 
     }
       else if (mode ==='date'){
-        const startDate = new moment(date);
+        var startDate = new moment(date);
         startDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-        const endDate = new moment(startDate)
+        let endDate = new moment(startDate);
         if (dateRange === 'month') {
-          endDate.add(1, "months")
+          startDate.startOf('month');
+          endDate.add(1, "months").startOf('month')
         } else if (dateRange === 'week') {
           endDate.add(1, "weeks")
         } else { //dateRange === 'day'
@@ -151,7 +164,8 @@ export default function OverviewPage(props) {
       startDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
       let endDate = new moment(startDate);
       if (dateRange === 'month') {
-        endDate.add(1, "months")
+        startDate.startOf('month');
+        endDate.add(1, "months").startOf('month')
       } else if (dateRange === 'week') {
         endDate.add(1, "weeks")
       } else { //dateRange === 'day'
@@ -285,7 +299,7 @@ export default function OverviewPage(props) {
     <Box className={classes.root}>
       <h1>Overview</h1>
       <div name="row-options" className={classes.titleRow}>
-        <div name="options" style={{display:'flex', alignItems:'center'}}>
+        <div name="options" >
           <FormControl className={classes.formControl} style={{ minWidth: "80px" }}>
             <InputLabel id="overview-sort" className={classes.bigFont}>View</InputLabel>
             <Select
@@ -306,6 +320,7 @@ export default function OverviewPage(props) {
           {renderSecondSelect()}
 
         </div>
+
         <div name="total">
           {Boolean(total) && <h2>Total: ${total.toFixed(2)}</h2>}
         </div>

@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     background: '#f5f5f5',
+    height: "100%"
   },
   appBar: {
     background: '#2E3B55',
@@ -37,6 +38,10 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
+  // [theme.breakpoints.down('sm')]: {
+  //   flexGrow: 0,
+  //   paddingTop: '10%',
+  // },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
@@ -77,9 +82,11 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
-    [theme.breakpoints.up('md')]: {
-      height: '100vh',
-    },
+    // [theme.breakpoints.up('md')]: {
+    //   height: '100vh',
+    // },
+    height: '100vh',
+    width:'100%',
     background: '#ADD8E6',
   },
   contentShift: {

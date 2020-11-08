@@ -1,3 +1,4 @@
+import React from 'react'
 import Box from '@material-ui/core/Box';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,7 +12,7 @@ import { useEffect } from 'react';
 import AddExpenseModal from './addExpenseModal'
 import EditExpenseModal from './editExpenseModal'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((style) => ({
   root:{
     width:'95%'
   },
@@ -43,9 +44,7 @@ const useStyles = makeStyles(() => ({
     width:'70%',
     paddingTop:'30px'
   },
-  formContinaer: {
 
-  }
 }));
 
 export default function AccountPage(props){
