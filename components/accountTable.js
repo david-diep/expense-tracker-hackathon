@@ -95,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     width: "100%",
     marginBottom: theme.spacing(2),
-    minHeight: '60vh',
+    minHeight: '65vh',
     maxHeight: '75vh'
   },
   [theme.breakpoints.up('md')]: {
@@ -141,9 +141,9 @@ export default function AccountTable(props) {
               <col style={{ width: '15%' }} />
               <col style={{ width: '20%' }} />
               <col style={{ width: '20%' }} />
+              <col style={{ width: '10%' }} />
               <col style={{ width: '15%' }} />
-              <col style={{ width: '15%' }} />
-              <col style={{ width: '15%' }} />
+              <col style={{ width: '20%' }} />
             </colgroup>
             <EnhancedTableHead
               classes={classes}

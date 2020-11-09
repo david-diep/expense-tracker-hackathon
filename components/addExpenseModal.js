@@ -13,7 +13,7 @@ import {
 } from '@material-ui/pickers';
 import Button from '@material-ui/core/Button';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: '95%'
   },
@@ -32,6 +32,10 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center'
   },
   modal: {
+    [theme.breakpoints.down('sm')]: {
+      height: '80vh',
+      width: '80vw',
+    },
     margin: '10% auto',
     height: '50vh',
     width: '30vw',

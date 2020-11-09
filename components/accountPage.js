@@ -12,13 +12,25 @@ import { useEffect } from 'react';
 import AddExpenseModal from './addExpenseModal'
 import EditExpenseModal from './editExpenseModal'
 
-const useStyles = makeStyles((style) => ({
-  root:{
-    width:'95%'
+const useStyles = makeStyles((theme) => ({
+  [theme.breakpoints.up('sm')]: {
+    root: {
+      width: '95%'
+    },
   },
+  [theme.breakpoints.down('sm')]: {
+    root: {
+      width: '98%',
+      paddingTop: '30px'
+    }
+  }
+  ,
   title:{
     display: 'flex',
     alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      paddingTop: '20px'
+    }
   },
   tableContainer:{
     marginTop:'15px',
@@ -28,7 +40,10 @@ const useStyles = makeStyles((style) => ({
     display:'flex',
     justifyContent:'space-between',
     flexWrap: 'nowrap',
-    alignItems: 'center'
+    alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      flexWrap:'wrap'
+    }
   },
   modal: {
     margin:'10% auto',
