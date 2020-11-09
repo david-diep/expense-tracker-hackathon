@@ -29,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     background: '#f5f5f5',
-    height: "100%"
+    height: "100%",
+    maxHeight: "100%"
   },
   appBar: {
     background: '#2E3B55',
@@ -38,10 +39,6 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
-  // [theme.breakpoints.down('sm')]: {
-  //   flexGrow: 0,
-  //   paddingTop: '10%',
-  // },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
@@ -58,7 +55,14 @@ const useStyles = makeStyles((theme) => ({
   },
   drawer: {
     width: drawerWidth,
+    [theme.breakpoints.up('sm')]: {
     flexShrink: 0,
+    },
+
+    [theme.breakpoints.down('sm')]: {
+      flexShrink: 1,
+      paddingTop: '10%',
+    },
   },
   drawerPaper: {
     width: drawerWidth,
@@ -75,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
     display:'flex',
     justifyContent:'center',
     paddingTop:'5%',
-    flexGrow: 1,
+    // flexGrow: 1,
     padding: theme.spacing(3),
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
@@ -85,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
     // [theme.breakpoints.up('md')]: {
     //   height: '100vh',
     // },
-    height: '100vh',
+    height: '100%',
     width:'100%',
     background: '#ADD8E6',
   },

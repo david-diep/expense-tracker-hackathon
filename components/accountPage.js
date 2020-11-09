@@ -28,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
   title:{
     display: 'flex',
     alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      paddingTop: '20px'
+    }
   },
   tableContainer:{
     marginTop:'15px',
@@ -37,7 +40,10 @@ const useStyles = makeStyles((theme) => ({
     display:'flex',
     justifyContent:'space-between',
     flexWrap: 'nowrap',
-    alignItems: 'center'
+    alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      flexWrap:'wrap'
+    }
   },
   modal: {
     margin:'10% auto',

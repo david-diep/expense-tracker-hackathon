@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.up('sm')]: {
       root:{
-        width: '95%'
+        width: '90%'
       },
       titleRow:{
         flexWrap: 'nowrap',
