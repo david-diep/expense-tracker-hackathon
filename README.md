@@ -1,24 +1,24 @@
 # Budget Buddy
- Expense Tracker made from Material UI, Next.js. Submitted in the [Mintbean Campus Playoffs](https://sites.google.com/mintbean.io/2020-09-25-mintbean-campus-pla/home)
+ Expense Tracker made from Material UI, Next.js. Originally, submitted in the [Mintbean Campus Playoffs](https://sites.google.com/mintbean.io/2020-09-25-mintbean-campus-pla/home), but have since been expanded.
 
 Live Demo
 ======
-[expense-tracker-hackathon.vercel.app/](https://expense-tracker-hackathon.vercel.app/)
+[https://budget-buddy.david-diep.com/](https://budget-buddy.david-diep.com/)
 
-Features for the Hackathon
+Features 
 ===
 
-- The user must be able to create an expense, account, or category
+- The user is able able to create an expense and account
 
-- The user must be able to edit an expense, account, or category
+- The user is able to edit an expense and account
 
-- The user must be able to view an expense, account, or category
+- The user must be able to view an expense and account
 
-- The user must be able to list all expenses, accounts, and categories
+- The user must be able to list all expense and account
 
 - In the list view, the user must be able to sort & filter expenses by account as well as category.
 
-- The user must be able to delete an expense, account, or category
+- The user must be able to delete an expense and account
 
 - The user must be able to see a Daily Report, which states total expenses in a given day
 
@@ -26,11 +26,16 @@ Features for the Hackathon
 
 - The user must be able to see a Monthly Report, which states total expenses per day over a given month
 
-- In all reports, the user must be able to filter expenses by account as well as category. I.e. they can specify which categories and/or accounts they want to see.
 
 Additional Features
 ===
 - All changes are saved in localStorage
+- Mobile Responsiveness (when viewing from mobile, slide tables left and right to view full information)
+
+Features to add
+===
+- Ability to add, edit, and remove categories
+- Redux for state change.
 
 Development
 ======
@@ -47,6 +52,7 @@ Technologies Used
 - React
 - Material-UI
 - Next.js
+- Moment
 
 ### Getting Started
 
