@@ -8,29 +8,30 @@ Live Demo
 Features 
 ===
 
-- The user is able able to create an expense and account
+- The user is able to create an expense and account
 
 - The user is able to edit an expense and account
 
-- The user must be able to view an expense and account
+- The user is able to view an expense and account
 
-- The user must be able to list all expense and account
+- The user is able to list all expense and account
 
-- In the list view, the user must be able to sort & filter expenses by account as well as category.
+- In the list view, the user is able to sort & filter expenses by account as well as category.
 
-- The user must be able to delete an expense and account
+- The user is able to delete an expense and account
 
-- The user must be able to see a Daily Report, which states total expenses in a given day
+- The user is able to see a Daily Report, which states total expenses in a given day
 
-- The user must be able to see a Weekly Report, which states total expenses per day over a given week
+- The user is able to see a Weekly Report, which states total expenses per day over a given week
 
-- The user must be able to see a Monthly Report, which states total expenses per day over a given month
+- The user is able to see a Monthly Report, which states total expenses per day over a given month
 
 
 Additional Features
 ===
 - All changes are saved in localStorage
 - Mobile Responsiveness (when viewing from mobile, slide tables left and right to view full information)
+- Filtering by account specifically with date/category
 
 Features to add
 ===
