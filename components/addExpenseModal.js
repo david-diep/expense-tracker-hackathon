@@ -175,17 +175,12 @@ export default function addExpenseModal(props){
               shrink: true,
             }}
             className={classes.modalItem}
-
-            label="Category">
-            <MenuItem value="">
-
-            </MenuItem>
-            <MenuItem value='Food'>Food</MenuItem>
-            <MenuItem value='Entertainment'>Entertainment</MenuItem>
-            <MenuItem value='Clothing'>Clothing</MenuItem>
-            <MenuItem value='Bills'>Bills</MenuItem>
-            <MenuItem value='Travel'>Travel</MenuItem>
-            <MenuItem value='Other'>Other</MenuItem>
+            label="Category"
+            >
+            <MenuItem value=""></MenuItem>
+            {Object.keys(props.categories).map((categoryId) => {
+              return <MenuItem key={categoryId} value={props.categories[categoryId].id}>{props.categories[categoryId].name}</MenuItem>
+            })}
           </TextField>
 
           <CurrencyTextField

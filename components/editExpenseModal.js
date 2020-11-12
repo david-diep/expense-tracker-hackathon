@@ -82,7 +82,6 @@ export default function EditExpenseModal(props) {
     props.setEditFocus(null);
     props.setEditExpenseModal(false);
   }
-  console.log(props.editFocus)
   return (
     <Modal
       open={props.editExpenseModal}
@@ -177,12 +176,9 @@ export default function EditExpenseModal(props) {
             className={classes.modalItem}
 
             label="Category">
-            <MenuItem value='Food'>Food</MenuItem>
-            <MenuItem value='Entertainment'>Entertainment</MenuItem>
-            <MenuItem value='Clothing'>Clothing</MenuItem>
-            <MenuItem value='Bills'>Bills</MenuItem>
-            <MenuItem value='Travel'>Travel</MenuItem>
-            <MenuItem value='Other'>Other</MenuItem>
+            {Object.keys(props.categories).map((categoryId) => {
+              return <MenuItem key={categoryId} value={props.categories[categoryId].id}>{props.categories[categoryId].name}</MenuItem>
+            })}
           </TextField>
 
           <CurrencyTextField

@@ -45,20 +45,6 @@ const useStyles = makeStyles((theme) => ({
       flexWrap:'wrap'
     }
   },
-  modal: {
-    margin:'10% auto',
-    height:'50vh',
-    width:'30vw',
-    background: '#f5f5f5',
-    display:'flex',
-    justifyContent:'center'
-  },
-  modalContainer: {
-    display:'flex',
-    flexDirection:'column',
-    width:'70%',
-    paddingTop:'30px'
-  },
 
 }));
 
@@ -88,10 +74,11 @@ export default function AccountPage(props){
       date: expense.date,
       expName: expense.expName,
       description: expense.description,
-      category: expense.category,
+      category: props.categories[expense.category].id,
       amount: expense.amount,
     }
   })
+
   useEffect(()=>{
     calculateTotal();
     if(!editName){
@@ -115,10 +102,8 @@ export default function AccountPage(props){
 
 
   const handleEditExpense = (expense) => {
-
     setEditFocus(expense);
     setEditExpenseModal(true);
-
   }
 
   const renderEditModal = () => {
@@ -131,6 +116,7 @@ export default function AccountPage(props){
           editExpenseModal={editExpenseModal}
           editExpense={props.editExpense}
           account={props.account}
+          categories={props.categories}
         />
       </>)
     }
@@ -179,14 +165,16 @@ export default function AccountPage(props){
         <AccountTable columns={columns} rows={rows}
           accountId={props.account.id}
           handleEditExpense={handleEditExpense}
+          categories={props.categories}
           deleteExpense={props.deleteExpense}
           />
     </Box>
       <AddExpenseModal
-          newExpenseModal={newExpenseModal}
-          addExpense={props.addExpense}
-          setNewExpenseModal={setNewExpenseModal}
-          account={props.account}/>
+        newExpenseModal={newExpenseModal}
+        addExpense={props.addExpense}
+        setNewExpenseModal={setNewExpenseModal}
+        account={props.account}
+        categories={props.categories}/>
       {renderEditModal()}
 
   </Box>

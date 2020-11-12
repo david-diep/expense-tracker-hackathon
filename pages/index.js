@@ -22,6 +22,8 @@ import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import AccountListItem from '../components/accountListItem';
 import AccountPage from '../components/accountPage';
 import OverviewPage from '../components/overviewPage';
+import CategoryIcon from '@material-ui/icons/Category';
+import CategoryPage from '../components/categoryPage';
 
 const drawerWidth = 240;
 
@@ -30,7 +32,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     background: '#f5f5f5',
     height: "100%",
-    maxHeight: "100%"
+    maxHeight: "100%",
+    [theme.breakpoints.up('sm')]: {
+      height:"100vh"
+    },
   },
   appBar: {
     background: '#2E3B55',
@@ -122,49 +127,53 @@ export default function Index() {
 
   const [accounts, setAccounts] = React.useState({"1":{ accName: "Default", id: 1 }});
   const [expenses, setExpenses] = React.useState({"1": [
-    { expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date(), category: "Food", amount: 6.00 }]})
+    { expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date(), category: 1, amount: 6.00 }]})
   const [newAccId, setNewAccId] = React.useState(2);
   const [newExpenseId, setNewExpenseId]= React.useState(2);
-
-  const [viewAccount, setViewAccount] = React.useState(false);
+  const [view, setView] = React.useState("overview");
 
   const [focusTarget, setFocusTarget] = React.useState(null);
-
+  const [categories, setCategories] = React.useState(
+    { "1": { name: "Food", id: 1 },
+      "2": { name: "Entertainment", id: 2 },
+      "3": { name: "Clothing", id: 3 },
+      "4": { name: "Bills", id: 4 },
+      "5": { name: "Travel", id: 5 },
+      "6": { name: "Other", id: 6 },
+    })
+  const [newCategoryId, setNewCategoryId] = React.useState(7)
 
   useEffect(()=>{
     const accountsJSON = window.localStorage.getItem('bb-accounts')
     const expensesJSON = window.localStorage.getItem('bb-expenses')
+    const categoriesJSON = window.localStorage.getItem('bb-categories')
     const newAccIdJSON = window.localStorage.getItem('bb-newAccId')
     const newExpenseIdJSON = window.localStorage.getItem('bb-newExpenseId')
-    if (accountsJSON && expensesJSON && newAccIdJSON && newExpenseIdJSON) {
+    const newCategoryIdJSON = window.localStorage.getItem('bb-newCategoryId')
+
+    if (accountsJSON && expensesJSON && newAccIdJSON && newExpenseIdJSON &&categoriesJSON && newCategoryIdJSON) {
       setAccounts(JSON.parse(accountsJSON))
       setExpenses(JSON.parse(expensesJSON))
+      setCategories(JSON.parse(categoriesJSON))
       setNewAccId(JSON.parse(newAccIdJSON))
       setNewExpenseId(JSON.parse(newExpenseIdJSON))
+      setNewCategoryId(JSON.parse(newCategoryIdJSON))
     }
   },[])
 
   useEffect(() => {
     window.localStorage.setItem('bb-accounts', JSON.stringify(accounts));
     window.localStorage.setItem('bb-expenses', JSON.stringify(expenses));
+    window.localStorage.setItem('bb-categories', JSON.stringify(categories));
     window.localStorage.setItem('bb-newAccId', JSON.stringify(newAccId));
     window.localStorage.setItem('bb-newExpenseId', JSON.stringify(newExpenseId));
+    window.localStorage.setItem('bb-newCategoryId', JSON.stringify(newCategoryId));
   })
-
-  const clearFocus = () => {
-    setFocusTarget(null);
-  }
 
   const setFocus = (id) => {
     setFocusTarget(accounts[id]);
-    setViewAccount(true);
+    setView("account");
   }
-
-  const goHome = () => {
-    setViewAccount(false);
-    clearFocus();
-  }
-
 
   const addAccount = () => {
     setAccounts(prevAccounts => {
@@ -180,7 +189,7 @@ export default function Index() {
   }
 
   const deleteAccount = (id) => {
-    setViewAccount(false);
+    setView("overview");
     setAccounts(prevAccounts => {
       delete prevAccounts[id];
       return {...prevAccounts};
@@ -217,10 +226,6 @@ export default function Index() {
     })
   }
 
-  const getAccountName = (accId) =>{
-    return accounts[accId].accName;
-  }
-
   const deleteExpense = (accId, expenseId) => {
     setExpenses((prevExpenses)=>{
       const deleteIndex = prevExpenses[accId].findIndex((expense) => expense.expenseId === expenseId)
@@ -229,22 +234,62 @@ export default function Index() {
     })
   }
 
+  const addCategory = (name) => {
+    setCategories(prevCategories => {
+      prevCategories[newCategoryId] = { name: name, id: newCategoryId };
+      setNewCategoryId(newCategoryId+1)
+      return { ...prevCategories };
+    })
+
+  }
+
+  const editCategory = (name,id) => {
+    setCategories(prevCategories => {
+      prevCategories[id].name = name;
+      return { ...prevCategories };
+    })
+  }
+
+  const deleteCategory = (id) => {
+    setCategories(prevCategories => {
+      delete prevCategories[id];
+      return {...prevCategories};
+    })
+  }
+
+  const getAccountName = (accId) => {
+    return accounts[accId].accName;
+  }
+
   const renderMain = () => {
-    if (viewAccount){
-     return  <AccountPage
-       getAccountName={getAccountName}
-        account={focusTarget}
-        expenses={expenses[focusTarget.id]}
-        editAccountName={editAccountName}
-        addExpense={addExpense}
-        editExpense={editExpense}
-        deleteExpense={deleteExpense}
-      />
-    } else{
+    if (view ==="account"){
+     return  (
+     <AccountPage
+      getAccountName={getAccountName}
+      account={focusTarget}
+      focusId={focusTarget.id}
+      expenses={expenses[focusTarget.id]}
+      editAccountName={editAccountName}
+      addExpense={addExpense}
+      editExpense={editExpense}
+      deleteExpense={deleteExpense}
+      categories = {categories}
+      />)
+    } else if (view==="category"){
+      return (
+      <CategoryPage
+        categories={categories}
+        addCategory={addCategory}
+        editCategory={editCategory}
+        deleteCategory={deleteCategory}
+      />)
+    }
+    else {
       return (
         <OverviewPage
           expenses={expenses}
           accounts={accounts}
+          categories={categories}
         />
       )
     }
@@ -275,7 +320,7 @@ export default function Index() {
               display: 'flex',
               alignItems: 'center'
             }}>
-              <Typography variant="h6" noWrap onClick={() => goHome()}>
+              <Typography variant="h6" noWrap onClick={() => setView('overview')}>
                 Budget Buddy
               </Typography>
               <LocalAtmIcon style={{marginLeft: "5px"}}/>
@@ -298,11 +343,18 @@ export default function Index() {
             </IconButton>
           </div>
           <Divider />
-          <ListItem button onClick={()=>goHome()}>
+          <ListItem button onClick={() => setView("overview")}>
             <ListItemText primary = {'Overview'}>
             </ListItemText>
             <ListItemIcon>
               <HomeIcon />
+            </ListItemIcon>
+          </ListItem>
+          <Divider />
+          <ListItem button onClick= {()=>setView('category')}>
+            <ListItemText primary = {'Manage Categories'}></ListItemText>
+            <ListItemIcon>
+              <CategoryIcon />
             </ListItemIcon>
           </ListItem>
           <Divider />
