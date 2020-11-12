@@ -13,6 +13,7 @@ import {
 } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment'
+import { Category } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -134,7 +135,7 @@ export default function OverviewPage(props) {
             date: expense.date,
             expName: expense.expName,
             description: expense.description,
-            category: expense.category,
+            category: props.categories[expense.category].name,
             amount: expense.amount
           }
         }))
@@ -182,7 +183,7 @@ export default function OverviewPage(props) {
               date: expense.date,
               expName: expense.expName,
               description: expense.description,
-              category: expense.category,
+              category: props.categories[expense.category].name,
               amount: expense.amount
             }
           }
@@ -209,12 +210,10 @@ export default function OverviewPage(props) {
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            <MenuItem value='Food'>Food</MenuItem>
-            <MenuItem value='Entertainment'>Entertainment</MenuItem>
-            <MenuItem value='Clothing'>Clothing</MenuItem>
-            <MenuItem value='Bills'>Bills</MenuItem>
-            <MenuItem value='Travel'>Travel</MenuItem>
-            <MenuItem value='Other'>Other</MenuItem>
+            {Object.keys(props.categories).map((categoryId)=>{
+              return <MenuItem key={categoryId} value={props.categories[categoryId].id}>{props.categories[categoryId].name}</MenuItem>
+            })}
+
 
             </Select>
         </FormControl>
@@ -325,9 +324,9 @@ export default function OverviewPage(props) {
           {Boolean(total) && <h2>Total: ${total.toFixed(2)}</h2>}
         </div>
       </div>
-      <Box style={{marginTop:'15px'}}>
+      <Box className={classes.tableContainer}>
         <OverviewTable
-          // columns={getTableColumns()}
+          categories={props.categories}
           rows={getTableRows()}
           mode={mode}
         />
