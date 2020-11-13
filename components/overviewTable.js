@@ -93,12 +93,15 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     marginBottom: theme.spacing(2),
     minHeight: '70vh',
-    maxHeight: '85vh'
+    maxHeight: '85vh',
   },
   [theme.breakpoints.up('md')]: {
     table: {
       minWidth: 750,
     }
+  },
+  table: {
+    overflow: 'auto'
   },
   visuallyHidden: {
     border: 0,
@@ -148,18 +151,6 @@ export default function OverviewTable(props) {
     setOrderBy(property);
   };
 
-  // const renderColGroup = ()=>{
-  //   return(
-  //     <colgroup>
-  //       <col style={{ width: '15%' }} />
-  //       <col style={{ width: '20%' }} />
-  //       <col style={{ width: '20%' }} />
-  //       <col style={{ width: '15%' }} />
-  //       <col style={{ width: '15%' }} />
-  //       <col style={{ width: '15%' }} />
-  //     </colgroup>
-  //   )
-  // }
 
   const renderTableBody = () => {
     if (props.mode === "default" || props.mode === "date"){
@@ -230,7 +221,7 @@ export default function OverviewTable(props) {
             size="medium"
             aria-label="enhanced table"
           >
-            {/* {renderColGroup()} */}
+
             <EnhancedTableHead
               classes={classes}
               order={order}

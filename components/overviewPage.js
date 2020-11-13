@@ -13,7 +13,6 @@ import {
 } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment'
-import { Category } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -135,7 +134,7 @@ export default function OverviewPage(props) {
             date: expense.date,
             expName: expense.expName,
             description: expense.description,
-            category: props.categories[expense.category].name,
+            category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
             amount: expense.amount
           }
         }))
@@ -166,7 +165,7 @@ export default function OverviewPage(props) {
       let endDate = new moment(startDate);
       if (dateRange === 'month') {
         startDate.startOf('month');
-        endDate.add(1, "months").startOf('month')
+        endDate.endOf('month')
       } else if (dateRange === 'week') {
         endDate.add(1, "weeks")
       } else { //dateRange === 'day'
@@ -183,7 +182,7 @@ export default function OverviewPage(props) {
               date: expense.date,
               expName: expense.expName,
               description: expense.description,
-              category: props.categories[expense.category].name,
+              category: props.categories[expense.category] === undefined? "Deleted" : props.categories[expense.category].name,
               amount: expense.amount
             }
           }
@@ -299,6 +298,9 @@ export default function OverviewPage(props) {
       <h1>Overview</h1>
       <div name="row-options" className={classes.titleRow}>
         <div name="options" >
+          <FormControl>
+
+          </FormControl>
           <FormControl className={classes.formControl} style={{ minWidth: "80px" }}>
             <InputLabel id="overview-sort" className={classes.bigFont}>View</InputLabel>
             <Select

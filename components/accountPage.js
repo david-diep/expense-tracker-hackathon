@@ -59,14 +59,7 @@ export default function AccountPage(props){
   const [editExpenseModal, setEditExpenseModal] = React.useState(false);
   const [total, setTotal] = React.useState();
 
-  const columns = [
-    { id: 'date',  label: "Date" },
-    { id: 'expName',  label: 'Name'},
-    { id: 'description',  label: 'Description' },
-    { id: 'category',  label: 'Category'},
-    { id: 'amount', rightAlign: true, label: 'Amount' },
-    { id: 'actions', label: 'Actions' },
-  ];
+
 
   const rows = props.expenses.map((expense) => {
     return {
@@ -74,7 +67,7 @@ export default function AccountPage(props){
       date: expense.date,
       expName: expense.expName,
       description: expense.description,
-      category: props.categories[expense.category].id,
+      category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
       amount: expense.amount,
     }
   })
@@ -162,7 +155,7 @@ export default function AccountPage(props){
     <Box
       className={classes.tableContainer}
       >
-        <AccountTable columns={columns} rows={rows}
+        <AccountTable rows={rows}
           accountId={props.account.id}
           handleEditExpense={handleEditExpense}
           categories={props.categories}
