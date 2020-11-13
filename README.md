@@ -8,17 +8,11 @@ Live Demo
 Features 
 ===
 
-- The user is able to create an expense and account
+- The user is able to create, edit, view, add, and delete expenses, categories and accounts
 
-- The user is able to edit an expense and account
-
-- The user is able to view an expense and account
-
-- The user is able to list all expense and account
+- The user is able to list all expenses and accounts
 
 - In the list view, the user is able to sort & filter expenses by account as well as category.
-
-- The user is able to delete an expense and account
 
 - The user is able to see a Daily Report, which states total expenses in a given day
 
@@ -31,11 +25,12 @@ Additional Features
 ===
 - All changes are saved in localStorage
 - Mobile Responsiveness (when viewing from mobile, slide tables left and right to view full information)
-- Filtering by account specifically with date/category
 
 Features to add
 ===
-- Ability to add, edit, and remove categories
+- Filtering by account specifically with date/category
+- Add color coding to accounts and categories
+- Add filtering by account to overview page
 - Redux for state change.
 
 Development
