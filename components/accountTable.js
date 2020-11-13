@@ -96,13 +96,17 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     marginBottom: theme.spacing(2),
     minHeight: '65vh',
-    maxHeight: '75vh'
+    maxHeight: '75vh',
+    overflow: 'auto'
   },
   [theme.breakpoints.up('md')]: {
   table: {
     minWidth: 750,
   }
 },
+  table: {
+    overflow: 'auto'
+  },
   visuallyHidden: {
     border: 0,
     clip: "rect(0 0 0 0)",
@@ -126,6 +130,15 @@ export default function AccountTable(props) {
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
+
+  const columns = [
+    { id: 'date', label: "Date" },
+    { id: 'expName', label: 'Name' },
+    { id: 'description', label: 'Description' },
+    { id: 'category', label: 'Category' },
+    { id: 'amount', rightAlign: true, label: 'Amount' },
+    { id: 'actions', label: 'Actions' },
+  ];
 
   return (
     <div className={classes.root}>
@@ -151,7 +164,7 @@ export default function AccountTable(props) {
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
               rowCount={props.rows.length}
-              columns={props.columns}
+              columns={columns}
             />
             <TableBody>
               {stableSort(props.rows, getComparator(order, orderBy))

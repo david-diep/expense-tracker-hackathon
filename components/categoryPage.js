@@ -15,7 +15,6 @@ import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from '@material-ui/icons/Delete';
 import Paper from "@material-ui/core/Paper";
 import Modal from '@material-ui/core/Modal';
-import { Category } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.up('sm')]: {
@@ -54,6 +53,10 @@ const useStyles = makeStyles((theme) => ({
     margin: '10% auto',
     height: '30vh',
     width: '30vw',
+    [theme.breakpoints.down('sm')]: {
+      width: '70vw',
+      height: '40vh'
+    },
     background: '#f5f5f5',
     display: 'flex',
     justifyContent: 'center'
