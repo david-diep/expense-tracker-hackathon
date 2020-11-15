@@ -181,7 +181,7 @@ export default function AccountTable(props) {
                       </TableCell>
                       <TableCell >{row.expName}</TableCell>
                       <TableCell >{row.description}</TableCell>
-                      <TableCell >{props.categories[row.category].name}</TableCell>
+                      <TableCell >{row.category}</TableCell>
                       <TableCell align="right">{parseFloat(row.amount).toFixed(2)}</TableCell>
                       <TableCell>
                         <IconButton onClick={() => props.handleEditExpense(row)}>

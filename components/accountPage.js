@@ -1,16 +1,19 @@
 import React from 'react'
-import Box from '@material-ui/core/Box';
+import { IconButton, Box, Paper, Modal, Button, TextField, FormControl, InputLabel, Select, MenuItem, } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import IconButton from '@material-ui/core/IconButton';
 import AccountTable from '../components/accountTable';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import { useForm, Controller} from "react-hook-form";
-import TextField from '@material-ui/core/TextField';
 import { useEffect } from 'react';
 import AddExpenseModal from './addExpenseModal'
 import EditExpenseModal from './editExpenseModal'
+import moment from 'moment'
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+  DatePicker
+} from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.up('sm')]: {
@@ -45,52 +48,161 @@ const useStyles = makeStyles((theme) => ({
       flexWrap:'wrap'
     }
   },
-
+  modal: {
+    margin: '10% auto',
+    height: '30vh',
+    width: '30vw',
+    [theme.breakpoints.down('sm')]: {
+      width: '70vw',
+      height: '40vh'
+    },
+    background: '#f5f5f5',
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  modalContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    paddingTop: '30px'
+  },
+  options: {
+    paddingBottom:'10px'
+  },
+  bigFont: {
+  fontSize: '1.2rem'
+}
 }));
 
 export default function AccountPage(props){
 
   const classes = useStyles();
-  const [editName, setEditName] = React.useState(false);
-  const { register, handleSubmit, control } = useForm();
+  const [editAccount, setEditAccount] = React.useState(false);
+
   const [title, setTitle] = React.useState(props.account.accName);
   const [newExpenseModal, setNewExpenseModal] = React.useState(false);
   const [editFocus, setEditFocus] = React.useState(null);
   const [editExpenseModal, setEditExpenseModal] = React.useState(false);
   const [total, setTotal] = React.useState();
 
+  const [mode, setMode] = React.useState("default")
+  const [category, setCategory] = React.useState("")
+  const [dateRange, setDateRange] = React.useState('day');
+  const [date, setDate] = React.useState(new moment());
 
+  const getRows = () => {
+    let rows =[];
+    if (mode === "default" || mode === 'category' && category === "") {
+      rows = props.expenses.map(expense => ({
+        expenseId: expense.expenseId,
+        date: expense.date,
+        expName: expense.expName,
+        description: expense.description,
+        category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
+        amount: expense.amount,
+      }))
+    } else if (mode === 'category') {
+      rows = props.expenses.map(expense => {
+        if (expense.category === category) {
+          return {
+            expenseId: expense.expenseId,
+            date: expense.date,
+            expName: expense.expName,
+            description: expense.description,
+            category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
+            amount: expense.amount,
+          }
+        }
+      })
+    } else if (mode === 'date') {
+      var startDate = new moment(date);
+      startDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      let endDate = new moment(startDate);
+      if (dateRange === 'month') {
+        startDate.startOf('month');
+        endDate.endOf('month')
+      } else if (dateRange === 'week') {
+        endDate.add(1, "weeks")
+      } else { //dateRange === 'day'
+        endDate.add(1, "day")
+      }
 
-  const rows = props.expenses.map((expense) => {
-    return {
-      expenseId: expense.expenseId,
-      date: expense.date,
-      expName: expense.expName,
-      description: expense.description,
-      category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
-      amount: expense.amount,
+      rows = props.expenses.map(expense => {
+        if (moment(expense.date).isSameOrAfter(startDate) && moment(endDate).isSameOrAfter(expense.date)) {
+          return {
+            expenseId: expense.expenseId,
+            date: expense.date,
+            expName: expense.expName,
+            description: expense.description,
+            category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
+            amount: expense.amount,
+          }
+        }
+        })
     }
-  })
+    rows = rows.filter(expense => expense !== undefined)
+    return rows;
+  }
+
 
   useEffect(()=>{
     calculateTotal();
-    if(!editName){
-      setTitle(props.getAccountName(props.account.id));
-    }
+    // if(!editName){
+    //   setTitle(props.getAccountName(props.account.id));
+    // }
   })
 
   const calculateTotal = () => {
     let total=0;
-    for(let i=0;i< props.expenses.length;i++){
-      total +=parseFloat(props.expenses[i].amount);
+
+    if (mode === "default" || mode === 'category' && category === "") {
+      const reducer = (accumulator, expense) => accumulator + parseFloat(expense.amount);
+        total += props.expenses.reduce(reducer, 0)
+
+
+    } else if (mode === 'category') {
+
+      const reducer = (accumulator, expense) => {
+        if (expense.category === category) {
+          return accumulator + parseFloat(expense.amount);
+        } else {
+          return accumulator;
+        }
+      };
+
+        total += props.expenses.reduce(reducer, 0)
+
     }
+    else if (mode === 'date') {
+      var startDate = new moment(date);
+      startDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      let endDate = new moment(startDate);
+      if (dateRange === 'month') {
+        startDate.startOf('month');
+        endDate.add(1, "months").startOf('month')
+      } else if (dateRange === 'week') {
+        endDate.add(1, "weeks")
+      } else { //dateRange === 'day'
+        endDate.add(1, "day")
+      }
+
+      const reducer = (accumulator, expense) => {
+        if (moment(expense.date).isSameOrAfter(startDate) && moment(endDate).isSameOrAfter(expense.date)) {
+          return accumulator + parseFloat(expense.amount);
+        } else {
+          return accumulator;
+        }
+      };
+
+        total += props.expenses.reduce(reducer, 0)
+    }
+
     setTotal(total);
   }
 
 
-  const editAccountSubmit = (data) => {
-    props.editAccountName(data.newAccName,props.account.id);
-    setEditName(false);
+  const handleAccountEdit = () => {
+    props.editAccountName(title,props.account.id);
+    setEditAccount(false);
   }
 
 
@@ -115,28 +227,101 @@ export default function AccountPage(props){
     }
   }
 
-  const renderTitle = () => {
-    if(!editName){
-      return(
-      <div className={classes.title} >
-        <h1>{title} </h1>
-        <IconButton onClick={() => setEditName(true)}><EditIcon /></IconButton>
-      </div >
-      )}
-    else{
-      return (
+  const renderSecondSelect = () => {
 
-        <form onSubmit={handleSubmit(editAccountSubmit)} className={classes.title}>
-          <Controller as={TextField} control={control}
-            id='newAccName'
-            name='newAccName'
-            ref={register}
-            style={{ fontSize: '2rem' }}
-            defaultValue={props.account.accName}
-            label="Account Name"/>
-          <Button type="submit" style={{ background:'#228B22', marginLeft:'5px'}}>Save</Button>
-          <Button onClick={() => { setEditName(false); }} type="reset" style={{ background: '#FF0000', marginLeft: '5px'}}>Cancel</Button>
-          </form>
+    if (mode === 'category') {
+
+      return (
+        <FormControl className={classes.formControl} style={{ marginLeft: '10px', minWidth: "120px" }}>
+          <InputLabel id="select-category" className={classes.bigFont}>Category</InputLabel>
+          <Select
+            className={classes.bigFont}
+            value={category}
+            onChange={(event) => setCategory(event.target.value)}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            {Object.keys(props.categories).map((categoryId) => {
+              return <MenuItem key={categoryId} value={props.categories[categoryId].id}>{props.categories[categoryId].name}</MenuItem>
+            })}
+
+
+          </Select>
+        </FormControl>
+      )
+    }
+    else if (mode === 'date') {
+      let dateSelector;
+      if (dateRange === 'month') {
+        dateSelector = (
+          <DatePicker
+            // variant="inline"
+            format="MM/YYYY"
+
+            openTo="month"
+            views={["year", "month"]}
+            label="Month and Year"
+            value={date}
+            onChange={date => setDate(date)}
+            id="date-picker"
+            label="Month"
+            InputProps={{
+              classes: {
+                input: classes.bigFont,
+              },
+            }}
+            InputLabelProps={{
+              classes: {
+                root: classes.bigFont,
+              }
+            }}
+          />
+        )
+      } else {
+        dateSelector = (
+          <KeyboardDatePicker
+            clearable
+            // variant="inline"
+            format="MM/DD/YYYY"
+
+            value={date}
+            onChange={date => setDate(date)}
+            id="date-picker"
+            label={dateRange === 'week' ? "Week Starting Date" : 'Date'}
+            InputProps={{
+              classes: {
+                input: classes.bigFont,
+              },
+            }}
+            InputLabelProps={{
+              classes: {
+                root: classes.bigFont,
+              }
+            }}
+          />)
+      }
+      return (
+        <>
+          <FormControl className={classes.formControl} style={{ marginLeft: '10px', minWidth: "120px" }}>
+
+            <InputLabel id="date-sort" style={{ minWidth: "60px" }} className={classes.bigFont}>Date Range</InputLabel>
+            <Select
+              value={dateRange}
+              onChange={(event) => setDateRange(event.target.value)}
+              className={classes.bigFont}
+            >
+              <MenuItem value={'day'}>Day</MenuItem>
+              <MenuItem value={'week'}>Week</MenuItem>
+              <MenuItem value={'month'}>Month</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl className={classes.formControl} style={{ marginLeft: '15px' }}>
+            <MuiPickersUtilsProvider utils={MomentUtils} >
+              {dateSelector}
+            </MuiPickersUtilsProvider>
+          </FormControl>
+        </>
       )
     }
   }
@@ -144,18 +329,45 @@ export default function AccountPage(props){
   return (
   <Box className={classes.root}>
     <div className={classes.titleRow}>
-      {renderTitle()}
+        <div className={classes.title} >
+          <h1>{title} </h1>
+          <IconButton onClick={() => setEditAccount(true)}><EditIcon /></IconButton>
+
+        </div >
       <div style={{marginRight:"10px"}}>
           {Boolean(total) && <h2>Total: ${total.toFixed(2)}</h2>}
       </div>
     </div>
+
+      <div name="options" className={classes.options}>
+
+        <FormControl className={classes.formControl} style={{ minWidth: "80px" }}>
+          <InputLabel id="overview-sort" className={classes.bigFont}>View</InputLabel>
+          <Select
+            className={classes.bigFont}
+            labelId="select-label"
+            id="overview-sort"
+            value={mode}
+            onChange={(event) => setMode(event.target.value)
+            }
+          >
+            <MenuItem value={'default'}>All</MenuItem>
+            <MenuItem value={'category'}>Category</MenuItem>
+            <MenuItem value={'date'}>Date</MenuItem>
+          </Select>
+
+        </FormControl>
+
+        {renderSecondSelect()}
+
+      </div>
       <Button onClick={() => setNewExpenseModal(true)} variant="contained" color="primary" endIcon={<AddCircleIcon />}>
         Add Expense
       </Button>
     <Box
       className={classes.tableContainer}
       >
-        <AccountTable rows={rows}
+        <AccountTable rows={getRows()}
           accountId={props.account.id}
           handleEditExpense={handleEditExpense}
           categories={props.categories}
@@ -169,7 +381,38 @@ export default function AccountPage(props){
         account={props.account}
         categories={props.categories}/>
       {renderEditModal()}
+      <Modal
+        open={editAccount}
+        onClose={() => setEditAccount(false)}>
+        <Paper className={classes.modal}>
+          <form className={classes.modalContainer} onSubmit={handleAccountEdit}>
+            <h2>Edit Account</h2>
+            <TextField
+              id='accountName'
+              name='accountName'
+              InputProps={{
+                classes: {
+                  input: classes.bigFont,
+                },
+              }}
+              InputLabelProps={{
+                classes: {
+                  root: classes.bigFont,
+                },
+                shrink: true,
+              }}
 
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+
+              label="Account Name"></TextField>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+              <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Add</Button>
+              <Button onClick={() => setEditAccount(false)} type="reset" style={{ background: '#FF0000', marginLeft: '5px' }}>Cancel</Button>
+            </div>
+          </form>
+        </Paper>
+      </Modal>
   </Box>
   )
 }

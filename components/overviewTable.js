@@ -193,7 +193,6 @@ export default function OverviewTable(props) {
                   key={index}
                 >
                   <TableCell component="th" scope="row">
-                    {/* {row.date} */}
                     {moment(row.date).format('M/DD/YYYY')}
                   </TableCell>
                   <TableCell>{row.account}</TableCell>
