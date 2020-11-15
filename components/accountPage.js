@@ -1,16 +1,13 @@
 import React from 'react'
-import Box from '@material-ui/core/Box';
+import { IconButton, Box, Paper, Modal, Button, TextField } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import IconButton from '@material-ui/core/IconButton';
 import AccountTable from '../components/accountTable';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import { useForm, Controller} from "react-hook-form";
-import TextField from '@material-ui/core/TextField';
 import { useEffect } from 'react';
 import AddExpenseModal from './addExpenseModal'
 import EditExpenseModal from './editExpenseModal'
+import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.up('sm')]: {
@@ -45,20 +42,40 @@ const useStyles = makeStyles((theme) => ({
       flexWrap:'wrap'
     }
   },
-
+  modal: {
+    margin: '10% auto',
+    height: '30vh',
+    width: '30vw',
+    [theme.breakpoints.down('sm')]: {
+      width: '70vw',
+      height: '40vh'
+    },
+    background: '#f5f5f5',
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  modalContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    paddingTop: '30px'
+  },
 }));
 
 export default function AccountPage(props){
 
   const classes = useStyles();
-  const [editName, setEditName] = React.useState(false);
-  const { register, handleSubmit, control } = useForm();
+  const [editAccount, setEditAccount] = React.useState(false);
+
   const [title, setTitle] = React.useState(props.account.accName);
   const [newExpenseModal, setNewExpenseModal] = React.useState(false);
   const [editFocus, setEditFocus] = React.useState(null);
   const [editExpenseModal, setEditExpenseModal] = React.useState(false);
   const [total, setTotal] = React.useState();
 
+  const [mode, setMode] = React.useState("default")
+  const [category, setCategory] = React.useState("")
+  const [dateRange, setDateRange] = React.useState('day');
+  const [date, setDate] = React.useState(new moment());
 
 
   const rows = props.expenses.map((expense) => {
@@ -74,9 +91,9 @@ export default function AccountPage(props){
 
   useEffect(()=>{
     calculateTotal();
-    if(!editName){
-      setTitle(props.getAccountName(props.account.id));
-    }
+    // if(!editName){
+    //   setTitle(props.getAccountName(props.account.id));
+    // }
   })
 
   const calculateTotal = () => {
@@ -88,9 +105,9 @@ export default function AccountPage(props){
   }
 
 
-  const editAccountSubmit = (data) => {
-    props.editAccountName(data.newAccName,props.account.id);
-    setEditName(false);
+  const handleAccountEdit = () => {
+    props.editAccountName(title,props.account.id);
+    setEditAccount(false);
   }
 
 
@@ -115,36 +132,15 @@ export default function AccountPage(props){
     }
   }
 
-  const renderTitle = () => {
-    if(!editName){
-      return(
-      <div className={classes.title} >
-        <h1>{title} </h1>
-        <IconButton onClick={() => setEditName(true)}><EditIcon /></IconButton>
-      </div >
-      )}
-    else{
-      return (
 
-        <form onSubmit={handleSubmit(editAccountSubmit)} className={classes.title}>
-          <Controller as={TextField} control={control}
-            id='newAccName'
-            name='newAccName'
-            ref={register}
-            style={{ fontSize: '2rem' }}
-            defaultValue={props.account.accName}
-            label="Account Name"/>
-          <Button type="submit" style={{ background:'#228B22', marginLeft:'5px'}}>Save</Button>
-          <Button onClick={() => { setEditName(false); }} type="reset" style={{ background: '#FF0000', marginLeft: '5px'}}>Cancel</Button>
-          </form>
-      )
-    }
-  }
 
   return (
   <Box className={classes.root}>
     <div className={classes.titleRow}>
-      {renderTitle()}
+        <div className={classes.title} >
+          <h1>{title} </h1>
+          <IconButton onClick={() => setEditAccount(true)}><EditIcon /></IconButton>
+        </div >
       <div style={{marginRight:"10px"}}>
           {Boolean(total) && <h2>Total: ${total.toFixed(2)}</h2>}
       </div>
@@ -169,7 +165,38 @@ export default function AccountPage(props){
         account={props.account}
         categories={props.categories}/>
       {renderEditModal()}
+      <Modal
+        open={editAccount}
+        onClose={() => setEditAccount(false)}>
+        <Paper className={classes.modal}>
+          <form className={classes.modalContainer} onSubmit={handleAccountEdit}>
+            <h2>Edit Account</h2>
+            <TextField
+              id='accountName'
+              name='accountName'
+              InputProps={{
+                classes: {
+                  input: classes.bigFont,
+                },
+              }}
+              InputLabelProps={{
+                classes: {
+                  root: classes.bigFont,
+                },
+                shrink: true,
+              }}
 
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+
+              label="Account Name"></TextField>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+              <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Add</Button>
+              <Button onClick={() => setEditAccount(false)} type="reset" style={{ background: '#FF0000', marginLeft: '5px' }}>Cancel</Button>
+            </div>
+          </form>
+        </Paper>
+      </Modal>
   </Box>
   )
 }
