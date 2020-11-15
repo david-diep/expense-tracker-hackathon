@@ -1,5 +1,5 @@
 import React from 'react'
-import { IconButton, Box, Paper, Modal, Button, TextField } from '@material-ui/core';
+import { IconButton, Box, Paper, Modal, Button, TextField, FormControl, InputLabel, Select, MenuItem, } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import AccountTable from '../components/accountTable';
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,6 +8,12 @@ import { useEffect } from 'react';
 import AddExpenseModal from './addExpenseModal'
 import EditExpenseModal from './editExpenseModal'
 import moment from 'moment'
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+  DatePicker
+} from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.up('sm')]: {
@@ -59,6 +65,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     paddingTop: '30px'
   },
+  options: {
+    paddingBottom:'10px'
+  },
+  bigFont: {
+  fontSize: '1.2rem'
+}
 }));
 
 export default function AccountPage(props){
@@ -77,17 +89,60 @@ export default function AccountPage(props){
   const [dateRange, setDateRange] = React.useState('day');
   const [date, setDate] = React.useState(new moment());
 
+  const getRows = () => {
+    let rows =[];
+    if (mode === "default" || mode === 'category' && category === "") {
+      rows = props.expenses.map(expense => ({
+        expenseId: expense.expenseId,
+        date: expense.date,
+        expName: expense.expName,
+        description: expense.description,
+        category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
+        amount: expense.amount,
+      }))
+    } else if (mode === 'category') {
+      rows = props.expenses.map(expense => {
+        if (expense.category === category) {
+          return {
+            expenseId: expense.expenseId,
+            date: expense.date,
+            expName: expense.expName,
+            description: expense.description,
+            category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
+            amount: expense.amount,
+          }
+        }
+      })
+    } else if (mode === 'date') {
+      var startDate = new moment(date);
+      startDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      let endDate = new moment(startDate);
+      if (dateRange === 'month') {
+        startDate.startOf('month');
+        endDate.endOf('month')
+      } else if (dateRange === 'week') {
+        endDate.add(1, "weeks")
+      } else { //dateRange === 'day'
+        endDate.add(1, "day")
+      }
 
-  const rows = props.expenses.map((expense) => {
-    return {
-      expenseId: expense.expenseId,
-      date: expense.date,
-      expName: expense.expName,
-      description: expense.description,
-      category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
-      amount: expense.amount,
+      rows = props.expenses.map(expense => {
+        if (moment(expense.date).isSameOrAfter(startDate) && moment(endDate).isSameOrAfter(expense.date)) {
+          return {
+            expenseId: expense.expenseId,
+            date: expense.date,
+            expName: expense.expName,
+            description: expense.description,
+            category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
+            amount: expense.amount,
+          }
+        }
+        })
     }
-  })
+    rows = rows.filter(expense => expense !== undefined)
+    return rows;
+  }
+
 
   useEffect(()=>{
     calculateTotal();
@@ -98,9 +153,49 @@ export default function AccountPage(props){
 
   const calculateTotal = () => {
     let total=0;
-    for(let i=0;i< props.expenses.length;i++){
-      total +=parseFloat(props.expenses[i].amount);
+
+    if (mode === "default" || mode === 'category' && category === "") {
+      const reducer = (accumulator, expense) => accumulator + parseFloat(expense.amount);
+        total += props.expenses.reduce(reducer, 0)
+
+
+    } else if (mode === 'category') {
+
+      const reducer = (accumulator, expense) => {
+        if (expense.category === category) {
+          return accumulator + parseFloat(expense.amount);
+        } else {
+          return accumulator;
+        }
+      };
+
+        total += props.expenses.reduce(reducer, 0)
+
     }
+    else if (mode === 'date') {
+      var startDate = new moment(date);
+      startDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      let endDate = new moment(startDate);
+      if (dateRange === 'month') {
+        startDate.startOf('month');
+        endDate.add(1, "months").startOf('month')
+      } else if (dateRange === 'week') {
+        endDate.add(1, "weeks")
+      } else { //dateRange === 'day'
+        endDate.add(1, "day")
+      }
+
+      const reducer = (accumulator, expense) => {
+        if (moment(expense.date).isSameOrAfter(startDate) && moment(endDate).isSameOrAfter(expense.date)) {
+          return accumulator + parseFloat(expense.amount);
+        } else {
+          return accumulator;
+        }
+      };
+
+        total += props.expenses.reduce(reducer, 0)
+    }
+
     setTotal(total);
   }
 
@@ -132,7 +227,104 @@ export default function AccountPage(props){
     }
   }
 
+  const renderSecondSelect = () => {
 
+    if (mode === 'category') {
+
+      return (
+        <FormControl className={classes.formControl} style={{ marginLeft: '10px', minWidth: "120px" }}>
+          <InputLabel id="select-category" className={classes.bigFont}>Category</InputLabel>
+          <Select
+            className={classes.bigFont}
+            value={category}
+            onChange={(event) => setCategory(event.target.value)}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            {Object.keys(props.categories).map((categoryId) => {
+              return <MenuItem key={categoryId} value={props.categories[categoryId].id}>{props.categories[categoryId].name}</MenuItem>
+            })}
+
+
+          </Select>
+        </FormControl>
+      )
+    }
+    else if (mode === 'date') {
+      let dateSelector;
+      if (dateRange === 'month') {
+        dateSelector = (
+          <DatePicker
+            // variant="inline"
+            format="MM/YYYY"
+
+            openTo="month"
+            views={["year", "month"]}
+            label="Month and Year"
+            value={date}
+            onChange={date => setDate(date)}
+            id="date-picker"
+            label="Month"
+            InputProps={{
+              classes: {
+                input: classes.bigFont,
+              },
+            }}
+            InputLabelProps={{
+              classes: {
+                root: classes.bigFont,
+              }
+            }}
+          />
+        )
+      } else {
+        dateSelector = (
+          <KeyboardDatePicker
+            clearable
+            // variant="inline"
+            format="MM/DD/YYYY"
+
+            value={date}
+            onChange={date => setDate(date)}
+            id="date-picker"
+            label={dateRange === 'week' ? "Week Starting Date" : 'Date'}
+            InputProps={{
+              classes: {
+                input: classes.bigFont,
+              },
+            }}
+            InputLabelProps={{
+              classes: {
+                root: classes.bigFont,
+              }
+            }}
+          />)
+      }
+      return (
+        <>
+          <FormControl className={classes.formControl} style={{ marginLeft: '10px', minWidth: "120px" }}>
+
+            <InputLabel id="date-sort" style={{ minWidth: "60px" }} className={classes.bigFont}>Date Range</InputLabel>
+            <Select
+              value={dateRange}
+              onChange={(event) => setDateRange(event.target.value)}
+              className={classes.bigFont}
+            >
+              <MenuItem value={'day'}>Day</MenuItem>
+              <MenuItem value={'week'}>Week</MenuItem>
+              <MenuItem value={'month'}>Month</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl className={classes.formControl} style={{ marginLeft: '15px' }}>
+            <MuiPickersUtilsProvider utils={MomentUtils} >
+              {dateSelector}
+            </MuiPickersUtilsProvider>
+          </FormControl>
+        </>
+      )
+    }
+  }
 
   return (
   <Box className={classes.root}>
@@ -140,18 +332,42 @@ export default function AccountPage(props){
         <div className={classes.title} >
           <h1>{title} </h1>
           <IconButton onClick={() => setEditAccount(true)}><EditIcon /></IconButton>
+
         </div >
       <div style={{marginRight:"10px"}}>
           {Boolean(total) && <h2>Total: ${total.toFixed(2)}</h2>}
       </div>
     </div>
+
+      <div name="options" className={classes.options}>
+
+        <FormControl className={classes.formControl} style={{ minWidth: "80px" }}>
+          <InputLabel id="overview-sort" className={classes.bigFont}>View</InputLabel>
+          <Select
+            className={classes.bigFont}
+            labelId="select-label"
+            id="overview-sort"
+            value={mode}
+            onChange={(event) => setMode(event.target.value)
+            }
+          >
+            <MenuItem value={'default'}>All</MenuItem>
+            <MenuItem value={'category'}>Category</MenuItem>
+            <MenuItem value={'date'}>Date</MenuItem>
+          </Select>
+
+        </FormControl>
+
+        {renderSecondSelect()}
+
+      </div>
       <Button onClick={() => setNewExpenseModal(true)} variant="contained" color="primary" endIcon={<AddCircleIcon />}>
         Add Expense
       </Button>
     <Box
       className={classes.tableContainer}
       >
-        <AccountTable rows={rows}
+        <AccountTable rows={getRows()}
           accountId={props.account.id}
           handleEditExpense={handleEditExpense}
           categories={props.categories}

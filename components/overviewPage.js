@@ -156,7 +156,6 @@ export default function OverviewPage(props) {
         }
         }))
       }
-      rows = rows.filter(expense => expense !== undefined)
 
     }
     else if (mode ==='date'){
@@ -188,9 +187,9 @@ export default function OverviewPage(props) {
           }
         }))
       }
-        rows = rows.filter(expense => expense !== undefined)
-    }
 
+    }
+    rows = rows.filter(expense => expense !== undefined)
     return rows;
   }
 
@@ -288,11 +287,11 @@ export default function OverviewPage(props) {
               {dateSelector}
             </MuiPickersUtilsProvider>
         </FormControl>
-
         </>
       )
     }
   }
+
   return(
     <Box className={classes.root}>
       <h1>Overview</h1>
@@ -311,7 +310,7 @@ export default function OverviewPage(props) {
               onChange={(event)=>setMode(event.target.value)
               }
             >
-              <MenuItem value={'default'}>Total</MenuItem>
+              <MenuItem value={'default'}>All</MenuItem>
               <MenuItem value={'category'}>Category</MenuItem>
               <MenuItem value={'date'}>Date</MenuItem>
             </Select>
