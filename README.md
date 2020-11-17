@@ -3,7 +3,7 @@
 
 Live Demo
 ======
-[https://budget-buddy.david-diep.com/](https://budget-buddy.david-diep.com/)
+[https://budget-buddy.david-diep.com/](https://budget-buddy.david-diep.com/) (Warning: Using Incognito Mode will cause the app to misbehave!)
 
 Features 
 ===
