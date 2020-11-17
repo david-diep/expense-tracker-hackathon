@@ -127,9 +127,9 @@ export default function Index() {
   };
 
   const [accounts, setAccounts] = React.useState({
-      "1":{ accName: "Default", id: 1 },
-    "2": { accName: "Second", id: 2 },
-    "3": { accName: "Third", id: 3 },
+    "1": { accName: "Default", id: 1, color: '#000080' },
+    "2": { accName: "Second", id: 2, color: '#FF0000'},
+    "3": { accName: "Third", id: 3, color: '#808080'},
     });
   const [expenses, setExpenses] = React.useState({
     "1": [{ expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date(), category: 1, amount: 6.00 },
@@ -196,7 +196,7 @@ export default function Index() {
 
   const addAccount = () => {
     setAccounts(prevAccounts => {
-      prevAccounts[newAccId] = { accName: "New Account", id: newAccId}
+      prevAccounts[newAccId] = { accName: "New Account", id: newAccId, color:'#FFFFFF'}
       return {...prevAccounts};
   })
     setExpenses(prevExpenses => {
@@ -220,9 +220,10 @@ export default function Index() {
 
   }
 
-  const editAccountName = (name, id) => {
+  const editAccount = (name, id, color) => {
       setAccounts((prevAccounts)=>{
         prevAccounts[id].accName=name;
+        prevAccounts[id].color = color;
         return {...prevAccounts};
     })
   }
@@ -279,16 +280,19 @@ export default function Index() {
   const getAccountName = (accId) => {
     return accounts[accId].accName;
   }
+  const getAccountColor = (accId) => {
+    return accounts[accId].color;
+  }
 
   const renderMain = () => {
     if (view ==="account"){
      return  (
      <AccountPage
       getAccountName={getAccountName}
+      getAccountColor={getAccountColor}
       account={focusTarget}
-      focusId={focusTarget.id}
       expenses={expenses[focusTarget.id]}
-      editAccountName={editAccountName}
+      editAccount={editAccount}
       addExpense={addExpense}
       editExpense={editExpense}
       deleteExpense={deleteExpense}

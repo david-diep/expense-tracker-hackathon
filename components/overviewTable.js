@@ -168,7 +168,7 @@ export default function OverviewTable(props) {
                 <TableCell component="th" scope="row">
                   {moment(row.date).format('M/DD/YYYY')}
                 </TableCell>
-                <TableCell>{row.account}</TableCell>
+                <TableCell><Chip text={row.account} backgroundColor={row.aColor}/></TableCell>
                 <TableCell >{row.expName}</TableCell>
                 <TableCell >{row.description}</TableCell>
                 <TableCell >{props.categories[row.category] === undefined ? "Deleted" : <Chip text={props.categories[row.category].name} backgroundColor={props.categories[row.category].color} />}</TableCell>

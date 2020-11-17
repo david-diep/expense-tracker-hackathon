@@ -135,7 +135,8 @@ export default function OverviewPage(props) {
             expName: expense.expName,
             description: expense.description,
             category: expense.category,
-            amount: expense.amount
+            amount: expense.amount,
+            aColor: props.accounts[account].color
           }
         }))
       }
@@ -151,7 +152,8 @@ export default function OverviewPage(props) {
               date: expense.date,
               expName: expense.expName,
               description: expense.description,
-              amount: expense.amount
+              amount: expense.amount,
+              aColor: props.accounts[account].color
             }
         }
         }))
@@ -182,7 +184,8 @@ export default function OverviewPage(props) {
               expName: expense.expName,
               description: expense.description,
               category: expense.category,
-              amount: expense.amount
+              amount: expense.amount,
+              aColor: props.accounts[account].color
             }
           }
         }))

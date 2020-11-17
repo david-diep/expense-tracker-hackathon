@@ -78,7 +78,7 @@ const colors = ['#000000', //black
   '#FFFF00', //yellow
   '#00FF00',	//limegreen
   '#00FFFF',	//aqua
-  '#FFFFFF']	//white
+  ]	//transparent
 
 export default function CategoryPage(props) {
 
@@ -88,6 +88,7 @@ export default function CategoryPage(props) {
   const [categoryName, setCategoryName] = React.useState('')
   const [editFocusId, setEditFocusId] = React.useState()
   const [color, setColor] = React.useState('#000000')
+
   const rows = Object.keys(props.categories).map((categoryId) => {
     return {
       id: categoryId,
@@ -152,15 +153,15 @@ export default function CategoryPage(props) {
                 className={classes.modalItem}
                 label="Color"
               >
+
                 {colors.map((color,index) => {
-                  if(color==='#FFFFFF'){
-                    return <MenuItem key={index} value={color} >{'No Color'}</MenuItem>
-                  }
+
                   if (color === '#000000') {
                     return <MenuItem key={index} value={color} >{'Black'}</MenuItem>
                   }
                   return <MenuItem key={index} value={color} style={{color: color}}>{color}</MenuItem>
                 })}
+                <MenuItem key={'transparent'} value={'#FFFFFF00'} >{'No Color'}</MenuItem>
               </TextField>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                 <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Add</Button>
@@ -214,6 +215,35 @@ export default function CategoryPage(props) {
                 onChange={(event) => setCategoryName(event.target.value)}
 
                 label="Category Name"></TextField>
+              <TextField
+                select
+                required
+                value={color}
+                onChange={(event) => setColor(event.target.value)}
+                id='color'
+                name='color'
+                InputProps={{
+                  classes: {
+                    input: classes.bigFont,
+                  },
+                }}
+                InputLabelProps={{
+                  classes: {
+                    root: classes.bigFont,
+                  },
+                }}
+                className={classes.modalItem}
+                label="Color"
+              >
+
+                {colors.map((color, index) => {
+                  if (color === '#000000') {
+                    return <MenuItem key={index} value={color} >{'Black'}</MenuItem>
+                  }
+                  return <MenuItem key={index} value={color} style={{ color: color }}>{color}</MenuItem>
+                })}
+                <MenuItem key={'transparent'} value={'#FFFFFF00'} >{'No Color'}</MenuItem>
+              </TextField>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                 <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Edit</Button>
                 <Button onClick={() => setCategoryModal(false)} type="reset" style={{ background: '#FF0000', marginLeft: '5px' }}>Cancel</Button>

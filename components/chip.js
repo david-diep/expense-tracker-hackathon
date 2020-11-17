@@ -11,8 +11,8 @@ export default function Chip(props){
       display: 'inline-block',
       padding: '2px 8px',
       backgroundColor:`${backgroundColor}`,
-
-      fontSize: `${title?'1.5rem':'1rem'}`
+      fontSize: `${title?'1.6rem':'1rem'}`,
+      fontWeight: `${title ? 'bold' : 'normal'}`
     }}>
       {text}
     </div>
