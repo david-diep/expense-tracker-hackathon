@@ -77,13 +77,11 @@ export default function AccountPage(props){
 
   const classes = useStyles();
   const [editAccount, setEditAccount] = React.useState(false);
-
   const [title, setTitle] = React.useState(props.account.accName);
   const [newExpenseModal, setNewExpenseModal] = React.useState(false);
   const [editFocus, setEditFocus] = React.useState(null);
   const [editExpenseModal, setEditExpenseModal] = React.useState(false);
   const [total, setTotal] = React.useState();
-
   const [mode, setMode] = React.useState("default")
   const [category, setCategory] = React.useState("")
   const [dateRange, setDateRange] = React.useState('day');
@@ -146,9 +144,6 @@ export default function AccountPage(props){
 
   useEffect(()=>{
     calculateTotal();
-    // if(!editName){
-    //   setTitle(props.getAccountName(props.account.id));
-    // }
   })
 
   const calculateTotal = () => {
@@ -256,9 +251,7 @@ export default function AccountPage(props){
       if (dateRange === 'month') {
         dateSelector = (
           <DatePicker
-            // variant="inline"
             format="MM/YYYY"
-
             openTo="month"
             views={["year", "month"]}
             label="Month and Year"
@@ -282,7 +275,6 @@ export default function AccountPage(props){
         dateSelector = (
           <KeyboardDatePicker
             clearable
-            // variant="inline"
             format="MM/DD/YYYY"
 
             value={date}
@@ -388,6 +380,7 @@ export default function AccountPage(props){
           <form className={classes.modalContainer} onSubmit={handleAccountEdit}>
             <h2>Edit Account</h2>
             <TextField
+              required
               id='accountName'
               name='accountName'
               InputProps={{

@@ -94,7 +94,7 @@ export default function EditExpenseModal(props) {
 
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <KeyboardDatePicker
-              disableToolbar
+              required
               variant="inline"
               format="MM/DD/YYYY"
               margin="normal"
@@ -116,6 +116,7 @@ export default function EditExpenseModal(props) {
           </MuiPickersUtilsProvider>
 
           <TextField
+            required
             id='expenseName'
             name='expenseName'
             InputProps={{
@@ -158,6 +159,7 @@ export default function EditExpenseModal(props) {
 
           <TextField
             select
+            required
             value={category}
             onChange={(event) => setCategory(event.target.value)}
             id='category'

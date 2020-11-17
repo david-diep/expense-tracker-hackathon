@@ -68,6 +68,7 @@ export default function addExpenseModal(props){
   const [selectedDate, handleDateChange] = React.useState(new Date());
   const [value, setValue] = React.useState(0);
 
+
   const newExpenseSubmit = () => {
     props.addExpense(props.account.id, {
       expName: expenseName,
@@ -95,8 +96,7 @@ export default function addExpenseModal(props){
 
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <KeyboardDatePicker
-              clearable
-              // variant="inline"
+              required
               format="MM/DD/YYYY"
               margin="normal"
               value={selectedDate}
@@ -117,6 +117,7 @@ export default function addExpenseModal(props){
           </MuiPickersUtilsProvider>
 
           <TextField
+            required
             id='expenseName'
             name='expenseName'
             InputProps={{
@@ -132,7 +133,6 @@ export default function addExpenseModal(props){
             }}
             value={expenseName}
             onChange={(event)=>setExpenseName(event.target.value)}
-
             label="Expense Name">
           </TextField>
 
@@ -159,6 +159,7 @@ export default function addExpenseModal(props){
 
           <TextField
             select
+            required
             value={category}
             onChange={(event) => setCategory(event.target.value)}
             id='category'

@@ -1,20 +1,10 @@
 import React from 'react'
-import Box from '@material-ui/core/Box';
+import { Button, TextField, Box, IconButton, Modal, Paper, TableRow, TableHead, TableContainer, TableCell, TableBody, Table} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import TextField from '@material-ui/core/TextField';
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from '@material-ui/icons/Delete';
-import Paper from "@material-ui/core/Paper";
-import Modal from '@material-ui/core/Modal';
+import Chip from './chip'
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.up('sm')]: {
@@ -68,7 +58,11 @@ const useStyles = makeStyles((theme) => ({
   },
   bigFont: {
     fontSize: '1.2rem'
-  }
+  },
+  categoryFont: {
+    fontSize: '3rem'
+  },
+
 
 }));
 
@@ -103,6 +97,7 @@ export default function CategoryPage(props) {
             <form className={classes.modalContainer} onSubmit={handleAddSubmit}>
               <h2>Add Category</h2>
               <TextField
+                required
                 id='categoryName'
                 name='categoryName'
                 InputProps={{
@@ -155,6 +150,7 @@ export default function CategoryPage(props) {
             <form className={classes.modalContainer} onSubmit={handleEditSubmit}>
               <h2>Edit Category Name</h2>
               <TextField
+                required
                 id='categoryName'
                 name='categoryName'
                 InputProps={{
@@ -204,10 +200,13 @@ export default function CategoryPage(props) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.name}>
+              {rows.map((row,index) => (
+                <TableRow key={index}>
                   <TableCell component="th" scope="row">
+                    <Chip text={row.name} backgroundColor={'#800080'}/>
+                    <div >
                     {row.name}
+                    </div>
                   </TableCell>
                   <TableCell>
                     <IconButton onClick={() => openEditModal(row.name,row.id)}>
