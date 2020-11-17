@@ -20,6 +20,10 @@ Features
 
 - The user is able to see a Monthly Report, which states total expenses per day over a given month
 
+- The user is able to filter account expenses specifically with date/category
+
+- The user is able to color code expenses and categories
+
 
 Additional Features
 ===
@@ -28,8 +32,6 @@ Additional Features
 
 Features to add
 ===
-- Filtering by account specifically with date/category
-- Add color coding to accounts and categories
 - Add filtering by account to overview page
 - Redux for state change.
 
