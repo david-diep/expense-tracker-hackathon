@@ -195,7 +195,7 @@ export default function OverviewTable(props) {
                   <TableCell component="th" scope="row">
                     {moment(row.date).format('M/DD/YYYY')}
                   </TableCell>
-                  <TableCell>{row.account}</TableCell>
+                  <TableCell><Chip text={row.account} backgroundColor={row.aColor} /></TableCell>
                   <TableCell >{row.expName}</TableCell>
                   <TableCell >{row.description}</TableCell>
                   <TableCell align="right">{parseFloat(row.amount).toFixed(2)}</TableCell>
