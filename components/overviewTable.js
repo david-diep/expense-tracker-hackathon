@@ -10,6 +10,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Paper from "@material-ui/core/Paper";
 import moment from 'moment'
+import Chip from './chip'
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -93,15 +94,15 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     marginBottom: theme.spacing(2),
     minHeight: '70vh',
-    maxHeight: '85vh',
+    // maxHeight: '85vh',
   },
   [theme.breakpoints.up('md')]: {
     table: {
       minWidth: 750,
     }
   },
-  table: {
-    overflow: 'auto'
+  overflow: {
+    overflowY: 'auto'
   },
   visuallyHidden: {
     border: 0,
@@ -158,7 +159,6 @@ export default function OverviewTable(props) {
       <TableBody>
         {stableSort(props.rows, getComparator(order, orderBy))
           .map((row, index) => {
-
             return (
               <TableRow
                 hover
@@ -168,10 +168,10 @@ export default function OverviewTable(props) {
                 <TableCell component="th" scope="row">
                   {moment(row.date).format('M/DD/YYYY')}
                 </TableCell>
-                <TableCell>{row.account}</TableCell>
+                <TableCell><Chip text={row.account} backgroundColor={row.aColor}/></TableCell>
                 <TableCell >{row.expName}</TableCell>
                 <TableCell >{row.description}</TableCell>
-                <TableCell >{row.category}</TableCell>
+                <TableCell >{props.categories[row.category] === undefined ? "Deleted" : <Chip text={props.categories[row.category].name} backgroundColor={props.categories[row.category].color} />}</TableCell>
                 <TableCell align="right">{parseFloat(row.amount).toFixed(2)}</TableCell>
 
               </TableRow>
@@ -195,7 +195,7 @@ export default function OverviewTable(props) {
                   <TableCell component="th" scope="row">
                     {moment(row.date).format('M/DD/YYYY')}
                   </TableCell>
-                  <TableCell>{row.account}</TableCell>
+                  <TableCell><Chip text={row.account} backgroundColor={row.aColor} /></TableCell>
                   <TableCell >{row.expName}</TableCell>
                   <TableCell >{row.description}</TableCell>
                   <TableCell align="right">{parseFloat(row.amount).toFixed(2)}</TableCell>

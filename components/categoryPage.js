@@ -1,20 +1,10 @@
 import React from 'react'
-import Box from '@material-ui/core/Box';
+import { MenuItem, Button, TextField, Box, IconButton, Modal, Paper, TableRow, TableHead, TableContainer, TableCell, TableBody, Table} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import TextField from '@material-ui/core/TextField';
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from '@material-ui/icons/Delete';
-import Paper from "@material-ui/core/Paper";
-import Modal from '@material-ui/core/Modal';
+import Chip from './chip'
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.up('sm')]: {
@@ -68,9 +58,27 @@ const useStyles = makeStyles((theme) => ({
   },
   bigFont: {
     fontSize: '1.2rem'
-  }
+  },
+  categoryFont: {
+    fontSize: '3rem'
+  },
+
 
 }));
+
+const colors = ['#000000', //black
+  '#808080', //gray
+  '#800000', //maroon
+  '#FF0000', //red
+  '#008000', //green
+  '#008080', //teal
+  '#800080', //purple
+  '#000080',	//navy
+  '#FF00FF', //magenta
+  '#FFFF00', //yellow
+  '#00FF00',	//limegreen
+  '#00FFFF',	//aqua
+  ]	//transparent
 
 export default function CategoryPage(props) {
 
@@ -79,18 +87,21 @@ export default function CategoryPage(props) {
   const [modalMode, setModalMode] = React.useState(false);
   const [categoryName, setCategoryName] = React.useState('')
   const [editFocusId, setEditFocusId] = React.useState()
+  const [color, setColor] = React.useState('#000000')
 
   const rows = Object.keys(props.categories).map((categoryId) => {
     return {
       id: categoryId,
-      name: props.categories[categoryId].name
+      name: props.categories[categoryId].name,
+      color: props.categories[categoryId].color
     }
   })
 
   const handleAddSubmit = () => {
     setCategoryModal(false)
-    props.addCategory(categoryName);
+    props.addCategory(categoryName, color);
     setCategoryName('');
+
   }
 
   const renderAddModal = () => {
@@ -103,6 +114,7 @@ export default function CategoryPage(props) {
             <form className={classes.modalContainer} onSubmit={handleAddSubmit}>
               <h2>Add Category</h2>
               <TextField
+                required
                 id='categoryName'
                 name='categoryName'
                 InputProps={{
@@ -121,6 +133,36 @@ export default function CategoryPage(props) {
                 onChange={(event) => setCategoryName(event.target.value)}
 
                 label="Category Name"></TextField>
+              <TextField
+                select
+                required
+                value={color}
+                onChange={(event) => setColor(event.target.value)}
+                id='color'
+                name='color'
+                InputProps={{
+                  classes: {
+                    input: classes.bigFont,
+                  },
+                }}
+                InputLabelProps={{
+                  classes: {
+                    root: classes.bigFont,
+                  },
+                }}
+                className={classes.modalItem}
+                label="Color"
+              >
+
+                {colors.map((color,index) => {
+
+                  if (color === '#000000') {
+                    return <MenuItem key={index} value={color} >{'Black'}</MenuItem>
+                  }
+                  return <MenuItem key={index} value={color} style={{color: color}}>{color}</MenuItem>
+                })}
+                <MenuItem key={'transparent'} value={'#FFFFFF00'} >{'No Color'}</MenuItem>
+              </TextField>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                 <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Add</Button>
                 <Button onClick={() => setCategoryModal(false)} type="reset" style={{ background: '#FF0000', marginLeft: '5px' }}>Cancel</Button>
@@ -155,6 +197,7 @@ export default function CategoryPage(props) {
             <form className={classes.modalContainer} onSubmit={handleEditSubmit}>
               <h2>Edit Category Name</h2>
               <TextField
+                required
                 id='categoryName'
                 name='categoryName'
                 InputProps={{
@@ -172,6 +215,35 @@ export default function CategoryPage(props) {
                 onChange={(event) => setCategoryName(event.target.value)}
 
                 label="Category Name"></TextField>
+              <TextField
+                select
+                required
+                value={color}
+                onChange={(event) => setColor(event.target.value)}
+                id='color'
+                name='color'
+                InputProps={{
+                  classes: {
+                    input: classes.bigFont,
+                  },
+                }}
+                InputLabelProps={{
+                  classes: {
+                    root: classes.bigFont,
+                  },
+                }}
+                className={classes.modalItem}
+                label="Color"
+              >
+
+                {colors.map((color, index) => {
+                  if (color === '#000000') {
+                    return <MenuItem key={index} value={color} >{'Black'}</MenuItem>
+                  }
+                  return <MenuItem key={index} value={color} style={{ color: color }}>{color}</MenuItem>
+                })}
+                <MenuItem key={'transparent'} value={'#FFFFFF00'} >{'No Color'}</MenuItem>
+              </TextField>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                 <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Edit</Button>
                 <Button onClick={() => setCategoryModal(false)} type="reset" style={{ background: '#FF0000', marginLeft: '5px' }}>Cancel</Button>
@@ -204,10 +276,10 @@ export default function CategoryPage(props) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.name}>
+              {rows.map((row,index) => (
+                <TableRow key={index}>
                   <TableCell component="th" scope="row">
-                    {row.name}
+                    <Chip text={row.name} backgroundColor={row.color}/>
                   </TableCell>
                   <TableCell>
                     <IconButton onClick={() => openEditModal(row.name,row.id)}>

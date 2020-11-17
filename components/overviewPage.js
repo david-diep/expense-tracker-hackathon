@@ -13,6 +13,7 @@ import {
 } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment'
+import Chip from './chip'
 
 const useStyles = makeStyles((theme) => ({
 
@@ -134,8 +135,9 @@ export default function OverviewPage(props) {
             date: expense.date,
             expName: expense.expName,
             description: expense.description,
-            category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
-            amount: expense.amount
+            category: expense.category,
+            amount: expense.amount,
+            aColor: props.accounts[account].color
           }
         }))
       }
@@ -151,7 +153,8 @@ export default function OverviewPage(props) {
               date: expense.date,
               expName: expense.expName,
               description: expense.description,
-              amount: expense.amount
+              amount: expense.amount,
+              aColor: props.accounts[account].color
             }
         }
         }))
@@ -181,8 +184,9 @@ export default function OverviewPage(props) {
               date: expense.date,
               expName: expense.expName,
               description: expense.description,
-              category: props.categories[expense.category] === undefined? "Deleted" : props.categories[expense.category].name,
-              amount: expense.amount
+              category: expense.category,
+              amount: expense.amount,
+              aColor: props.accounts[account].color
             }
           }
         }))
@@ -204,6 +208,16 @@ export default function OverviewPage(props) {
             className={classes.bigFont}
             value={category}
             onChange={(event) => setCategory(event.target.value)}
+            InputProps={{
+              classes: {
+                input: classes.bigFont,
+              },
+            }}
+            InputLabelProps={{
+              classes: {
+                root: classes.bigFont,
+              }
+            }}
           >
             <MenuItem value="">
               <em>None</em>
@@ -296,7 +310,7 @@ export default function OverviewPage(props) {
     <Box className={classes.root}>
       <h1>Overview</h1>
       <div name="row-options" className={classes.titleRow}>
-        <div name="options" >
+        <div name="options" className={classes.titleRow} >
           <FormControl>
 
           </FormControl>

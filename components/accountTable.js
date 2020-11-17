@@ -13,6 +13,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Paper from "@material-ui/core/Paper";
 import moment from 'moment'
+import Chip from './chip'
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -96,8 +97,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     marginBottom: theme.spacing(2),
     minHeight: '65vh',
-    maxHeight: '75vh',
-    overflow: 'auto'
+    // maxHeight: '75vh',
   },
   [theme.breakpoints.up('md')]: {
   table: {
@@ -105,7 +105,7 @@ const useStyles = makeStyles((theme) => ({
   }
 },
   table: {
-    overflow: 'auto'
+    overflowY: 'auto'
   },
   visuallyHidden: {
     border: 0,
@@ -181,7 +181,7 @@ export default function AccountTable(props) {
                       </TableCell>
                       <TableCell >{row.expName}</TableCell>
                       <TableCell >{row.description}</TableCell>
-                      <TableCell >{row.category}</TableCell>
+                      <TableCell >{props.categories[row.category] === undefined ? "Deleted" : <Chip text={props.categories[row.category].name} backgroundColor={props.categories[row.category].color} />}</TableCell>
                       <TableCell align="right">{parseFloat(row.amount).toFixed(2)}</TableCell>
                       <TableCell>
                         <IconButton onClick={() => props.handleEditExpense(row)}>

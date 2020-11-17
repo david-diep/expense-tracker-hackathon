@@ -14,6 +14,21 @@ import {
   DatePicker
 } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
+import Chip from './chip'
+
+const colors = ['#000000', //black
+  '#808080', //gray
+  '#800000', //maroon
+  '#FF0000', //red
+  '#008000', //green
+  '#008080', //teal
+  '#800080', //purple
+  '#000080',	//navy
+  '#FF00FF', //magenta
+  '#FFFF00', //yellow
+  '#00FF00',	//limegreen
+  '#00FFFF',	//aqua
+  '#FFFFFF00']	//transparent
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.up('sm')]: {
@@ -76,18 +91,17 @@ const useStyles = makeStyles((theme) => ({
 export default function AccountPage(props){
 
   const classes = useStyles();
-  const [editAccount, setEditAccount] = React.useState(false);
-
+  const [editAccountModal, setEditAccountModal] = React.useState(false);
   const [title, setTitle] = React.useState(props.account.accName);
   const [newExpenseModal, setNewExpenseModal] = React.useState(false);
   const [editFocus, setEditFocus] = React.useState(null);
   const [editExpenseModal, setEditExpenseModal] = React.useState(false);
   const [total, setTotal] = React.useState();
-
   const [mode, setMode] = React.useState("default")
   const [category, setCategory] = React.useState("")
   const [dateRange, setDateRange] = React.useState('day');
   const [date, setDate] = React.useState(new moment());
+  const [color, setColor] = React.useState(props.account.color)
 
   const getRows = () => {
     let rows =[];
@@ -97,7 +111,7 @@ export default function AccountPage(props){
         date: expense.date,
         expName: expense.expName,
         description: expense.description,
-        category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
+        category: expense.category,
         amount: expense.amount,
       }))
     } else if (mode === 'category') {
@@ -108,7 +122,7 @@ export default function AccountPage(props){
             date: expense.date,
             expName: expense.expName,
             description: expense.description,
-            category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
+            category: expense.category,
             amount: expense.amount,
           }
         }
@@ -133,7 +147,7 @@ export default function AccountPage(props){
             date: expense.date,
             expName: expense.expName,
             description: expense.description,
-            category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
+            category: expense.category,
             amount: expense.amount,
           }
         }
@@ -146,10 +160,14 @@ export default function AccountPage(props){
 
   useEffect(()=>{
     calculateTotal();
-    // if(!editName){
-    //   setTitle(props.getAccountName(props.account.id));
-    // }
-  })
+
+  }
+  )
+  useEffect(() => {
+    setTitle(props.getAccountName(props.account.id));
+    //  setColor(props.getAccountColor(props.account.id))
+    // console.log(props.getAccountColor(props.account.id))
+    },[props.account])
 
   const calculateTotal = () => {
     let total=0;
@@ -201,8 +219,8 @@ export default function AccountPage(props){
 
 
   const handleAccountEdit = () => {
-    props.editAccountName(title,props.account.id);
-    setEditAccount(false);
+    props.editAccount(title,props.account.id, color);
+    setEditAccountModal(false);
   }
 
 
@@ -256,9 +274,7 @@ export default function AccountPage(props){
       if (dateRange === 'month') {
         dateSelector = (
           <DatePicker
-            // variant="inline"
             format="MM/YYYY"
-
             openTo="month"
             views={["year", "month"]}
             label="Month and Year"
@@ -281,10 +297,7 @@ export default function AccountPage(props){
       } else {
         dateSelector = (
           <KeyboardDatePicker
-            clearable
-            // variant="inline"
             format="MM/DD/YYYY"
-
             value={date}
             onChange={date => setDate(date)}
             id="date-picker"
@@ -330,8 +343,8 @@ export default function AccountPage(props){
   <Box className={classes.root}>
     <div className={classes.titleRow}>
         <div className={classes.title} >
-          <h1>{title} </h1>
-          <IconButton onClick={() => setEditAccount(true)}><EditIcon /></IconButton>
+          <Chip text={title} backgroundColor={props.account.color} title={true}/>
+          <IconButton onClick={() => setEditAccountModal(true)}><EditIcon /></IconButton>
 
         </div >
       <div style={{marginRight:"10px"}}>
@@ -372,6 +385,7 @@ export default function AccountPage(props){
           handleEditExpense={handleEditExpense}
           categories={props.categories}
           deleteExpense={props.deleteExpense}
+          color={props.account.color}
           />
     </Box>
       <AddExpenseModal
@@ -382,12 +396,13 @@ export default function AccountPage(props){
         categories={props.categories}/>
       {renderEditModal()}
       <Modal
-        open={editAccount}
-        onClose={() => setEditAccount(false)}>
+        open={editAccountModal}
+        onClose={() => setEditAccountModal(false)}>
         <Paper className={classes.modal}>
           <form className={classes.modalContainer} onSubmit={handleAccountEdit}>
             <h2>Edit Account</h2>
             <TextField
+              required
               id='accountName'
               name='accountName'
               InputProps={{
@@ -406,9 +421,39 @@ export default function AccountPage(props){
               onChange={(event) => setTitle(event.target.value)}
 
               label="Account Name"></TextField>
+            <TextField
+              select
+              required
+              value={color}
+              onChange={(event) => setColor(event.target.value)}
+              id='color'
+              name='color'
+              InputProps={{
+                classes: {
+                  input: classes.bigFont,
+                },
+              }}
+              InputLabelProps={{
+                classes: {
+                  root: classes.bigFont,
+                },
+              }}
+              className={classes.modalItem}
+              label="Color"
+            >
+              {colors.map((color, index) => {
+                if (color === '#FFFFFF00') {
+                  return <MenuItem key={index} value={color} >{'No Color'}</MenuItem>
+                }
+                if (color === '#000000') {
+                  return <MenuItem key={index} value={color} >{'Black'}</MenuItem>
+                }
+                return <MenuItem key={index} value={color} style={{ color: color }}>{color}</MenuItem>
+              })}
+            </TextField>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
-              <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Add</Button>
-              <Button onClick={() => setEditAccount(false)} type="reset" style={{ background: '#FF0000', marginLeft: '5px' }}>Cancel</Button>
+              <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Edit</Button>
+              <Button onClick={() => setEditAccountModal(false)} type="reset" style={{ background: '#FF0000', marginLeft: '5px' }}>Cancel</Button>
             </div>
           </form>
         </Paper>

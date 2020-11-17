@@ -68,7 +68,6 @@ export default function EditExpenseModal(props) {
   const [category, setCategory] = React.useState(props.editFocus.category)
   const [selectedDate, handleDateChange] = React.useState(props.editFocus.date);
   const [value, setValue] = React.useState(props.editFocus.amount);
-
   const editExpenseSubmit = () => {
     props.editExpense(props.account.id, props.editFocus.expenseId, {
       expenseId: props.editFocus.expenseId,
@@ -94,7 +93,7 @@ export default function EditExpenseModal(props) {
 
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <KeyboardDatePicker
-              disableToolbar
+              required
               variant="inline"
               format="MM/DD/YYYY"
               margin="normal"
@@ -116,6 +115,7 @@ export default function EditExpenseModal(props) {
           </MuiPickersUtilsProvider>
 
           <TextField
+            required
             id='expenseName'
             name='expenseName'
             InputProps={{
@@ -158,6 +158,7 @@ export default function EditExpenseModal(props) {
 
           <TextField
             select
+            required
             value={category}
             onChange={(event) => setCategory(event.target.value)}
             id='category'

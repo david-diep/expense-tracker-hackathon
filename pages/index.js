@@ -97,6 +97,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     width:'100%',
     background: '#ADD8E6',
+    backgroundSize: 'cover',
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -126,9 +127,9 @@ export default function Index() {
   };
 
   const [accounts, setAccounts] = React.useState({
-      "1":{ accName: "Default", id: 1 },
-    "2": { accName: "Second", id: 2 },
-    "3": { accName: "Third", id: 3 },
+    "1": { accName: "Default", id: 1, color: '#000080' },
+    "2": { accName: "Second", id: 2, color: '#FF0000'},
+    "3": { accName: "Third", id: 3, color: '#808080'},
     });
   const [expenses, setExpenses] = React.useState({
     "1": [{ expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date(), category: 1, amount: 6.00 },
@@ -151,12 +152,13 @@ export default function Index() {
   const [view, setView] = React.useState("overview");
   const [focusTarget, setFocusTarget] = React.useState(null);
   const [categories, setCategories] = React.useState(
-    { "1": { name: "Food", id: 1 },
-      "2": { name: "Entertainment", id: 2 },
-      "3": { name: "Clothing", id: 3 },
-      "4": { name: "Bills", id: 4 },
-      "5": { name: "Travel", id: 5 },
-      "6": { name: "Other", id: 6 },
+    {
+      "1": { name: "Food", id: 1, color:'#008000'},
+      "2": { name: "Entertainment", id: 2, color: '#800000' },
+      "3": { name: "Clothing", id: 3, color: '#00FF00'},
+      "4": { name: "Bills", id: 4, color: '#00FFFF'},
+      "5": { name: "Travel", id: 5, color: '#808080'},
+      "6": { name: "Other", id: 6, color: '#000000' },
     })
   const [newCategoryId, setNewCategoryId] = React.useState(7)
 
@@ -194,7 +196,7 @@ export default function Index() {
 
   const addAccount = () => {
     setAccounts(prevAccounts => {
-      prevAccounts[newAccId] = { accName: "New Account", id: newAccId}
+      prevAccounts[newAccId] = { accName: "New Account", id: newAccId, color:'#FFFFFF'}
       return {...prevAccounts};
   })
     setExpenses(prevExpenses => {
@@ -218,9 +220,10 @@ export default function Index() {
 
   }
 
-  const editAccountName = (name, id) => {
+  const editAccount = (name, id, color) => {
       setAccounts((prevAccounts)=>{
         prevAccounts[id].accName=name;
+        prevAccounts[id].color = color;
         return {...prevAccounts};
     })
   }
@@ -251,9 +254,9 @@ export default function Index() {
     })
   }
 
-  const addCategory = (name) => {
+  const addCategory = (name, color) => {
     setCategories(prevCategories => {
-      prevCategories[newCategoryId] = { name: name, id: newCategoryId };
+      prevCategories[newCategoryId] = { name: name, id: newCategoryId, color:color };
       setNewCategoryId(newCategoryId+1)
       return { ...prevCategories };
     })
@@ -277,16 +280,19 @@ export default function Index() {
   const getAccountName = (accId) => {
     return accounts[accId].accName;
   }
+  const getAccountColor = (accId) => {
+    return accounts[accId].color;
+  }
 
   const renderMain = () => {
     if (view ==="account"){
      return  (
      <AccountPage
       getAccountName={getAccountName}
+      getAccountColor={getAccountColor}
       account={focusTarget}
-      focusId={focusTarget.id}
       expenses={expenses[focusTarget.id]}
-      editAccountName={editAccountName}
+      editAccount={editAccount}
       addExpense={addExpense}
       editExpense={editExpense}
       deleteExpense={deleteExpense}
