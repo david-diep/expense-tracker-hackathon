@@ -97,6 +97,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     width:'100%',
     background: '#ADD8E6',
+    backgroundSize: 'cover',
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -252,9 +253,9 @@ export default function Index() {
     })
   }
 
-  const addCategory = (name) => {
+  const addCategory = (name, color) => {
     setCategories(prevCategories => {
-      prevCategories[newCategoryId] = { name: name, id: newCategoryId };
+      prevCategories[newCategoryId] = { name: name, id: newCategoryId, color:color };
       setNewCategoryId(newCategoryId+1)
       return { ...prevCategories };
     })

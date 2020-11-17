@@ -68,7 +68,6 @@ export default function EditExpenseModal(props) {
   const [category, setCategory] = React.useState(props.editFocus.category)
   const [selectedDate, handleDateChange] = React.useState(props.editFocus.date);
   const [value, setValue] = React.useState(props.editFocus.amount);
-  console.log(props.editFocus.category)
   const editExpenseSubmit = () => {
     props.editExpense(props.account.id, props.editFocus.expenseId, {
       expenseId: props.editFocus.expenseId,
@@ -179,7 +178,6 @@ export default function EditExpenseModal(props) {
 
             label="Category">
             {Object.keys(props.categories).map((categoryId) => {
-              console.log(props.categories[categoryId].id)
               return <MenuItem key={categoryId} value={props.categories[categoryId].id}>{props.categories[categoryId].name}</MenuItem>
             })}
           </TextField>

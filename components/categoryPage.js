@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, TextField, Box, IconButton, Modal, Paper, TableRow, TableHead, TableContainer, TableCell, TableBody, Table} from '@material-ui/core';
+import { MenuItem, Button, TextField, Box, IconButton, Modal, Paper, TableRow, TableHead, TableContainer, TableCell, TableBody, Table} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { makeStyles } from '@material-ui/core/styles';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
@@ -66,6 +66,20 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+const colors = ['#000000', //black
+  '#808080', //gray
+  '#800000', //maroon
+  '#FF0000', //red
+  '#008000', //green
+  '#008080', //teal
+  '#800080', //purple
+  '#000080',	//navy
+  '#FF00FF', //magenta
+  '#FFFF00', //yellow
+  '#00FF00',	//limegreen
+  '#00FFFF',	//aqua
+  '#FFFFFF']	//white
+
 export default function CategoryPage(props) {
 
   const classes = useStyles();
@@ -73,18 +87,20 @@ export default function CategoryPage(props) {
   const [modalMode, setModalMode] = React.useState(false);
   const [categoryName, setCategoryName] = React.useState('')
   const [editFocusId, setEditFocusId] = React.useState()
-
+  const [color, setColor] = React.useState('#000000')
   const rows = Object.keys(props.categories).map((categoryId) => {
     return {
       id: categoryId,
-      name: props.categories[categoryId].name
+      name: props.categories[categoryId].name,
+      color: props.categories[categoryId].color
     }
   })
 
   const handleAddSubmit = () => {
     setCategoryModal(false)
-    props.addCategory(categoryName);
+    props.addCategory(categoryName, color);
     setCategoryName('');
+
   }
 
   const renderAddModal = () => {
@@ -116,6 +132,36 @@ export default function CategoryPage(props) {
                 onChange={(event) => setCategoryName(event.target.value)}
 
                 label="Category Name"></TextField>
+              <TextField
+                select
+                required
+                value={color}
+                onChange={(event) => setColor(event.target.value)}
+                id='color'
+                name='color'
+                InputProps={{
+                  classes: {
+                    input: classes.bigFont,
+                  },
+                }}
+                InputLabelProps={{
+                  classes: {
+                    root: classes.bigFont,
+                  },
+                }}
+                className={classes.modalItem}
+                label="Color"
+              >
+                {colors.map((color,index) => {
+                  if(color==='#FFFFFF'){
+                    return <MenuItem key={index} value={color} >{'No Color'}</MenuItem>
+                  }
+                  if (color === '#000000') {
+                    return <MenuItem key={index} value={color} >{'Black'}</MenuItem>
+                  }
+                  return <MenuItem key={index} value={color} style={{color: color}}>{color}</MenuItem>
+                })}
+              </TextField>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                 <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Add</Button>
                 <Button onClick={() => setCategoryModal(false)} type="reset" style={{ background: '#FF0000', marginLeft: '5px' }}>Cancel</Button>
@@ -203,10 +249,7 @@ export default function CategoryPage(props) {
               {rows.map((row,index) => (
                 <TableRow key={index}>
                   <TableCell component="th" scope="row">
-                    <Chip text={row.name} backgroundColor={'#800080'}/>
-                    <div >
-                    {row.name}
-                    </div>
+                    <Chip text={row.name} backgroundColor={row.color}/>
                   </TableCell>
                   <TableCell>
                     <IconButton onClick={() => openEditModal(row.name,row.id)}>

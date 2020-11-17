@@ -173,7 +173,6 @@ export default function addExpenseModal(props){
               classes: {
                 root: classes.bigFont,
               },
-              shrink: true,
             }}
             className={classes.modalItem}
             label="Category"
