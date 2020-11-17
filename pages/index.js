@@ -24,6 +24,7 @@ import AccountPage from '../components/accountPage';
 import OverviewPage from '../components/overviewPage';
 import CategoryIcon from '@material-ui/icons/Category';
 import CategoryPage from '../components/categoryPage';
+import Link from 'next/link'
 
 const drawerWidth = 240;
 
@@ -348,8 +349,11 @@ export default function Index() {
               </Typography>
               <LocalAtmIcon style={{marginLeft: "5px"}}/>
             </div>
-
+            <Link href="/about">
+              <Button variant="contained" style={{ marginLeft: "40px", }}>About</Button>
+            </Link>
           </Toolbar>
+
         </AppBar>
         <Drawer
           className={classes.drawer}
