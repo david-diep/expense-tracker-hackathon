@@ -151,12 +151,13 @@ export default function Index() {
   const [view, setView] = React.useState("overview");
   const [focusTarget, setFocusTarget] = React.useState(null);
   const [categories, setCategories] = React.useState(
-    { "1": { name: "Food", id: 1 },
-      "2": { name: "Entertainment", id: 2 },
-      "3": { name: "Clothing", id: 3 },
-      "4": { name: "Bills", id: 4 },
-      "5": { name: "Travel", id: 5 },
-      "6": { name: "Other", id: 6 },
+    {
+      "1": { name: "Food", id: 1, color:'#008000'},
+      "2": { name: "Entertainment", id: 2, color: '#800000' },
+      "3": { name: "Clothing", id: 3, color: '#00FF00'},
+      "4": { name: "Bills", id: 4, color: '#00FFFF'},
+      "5": { name: "Travel", id: 5, color: '#808080'},
+      "6": { name: "Other", id: 6, color: '#000000' },
     })
   const [newCategoryId, setNewCategoryId] = React.useState(7)
 

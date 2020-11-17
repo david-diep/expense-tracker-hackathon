@@ -158,7 +158,6 @@ export default function OverviewTable(props) {
       <TableBody>
         {stableSort(props.rows, getComparator(order, orderBy))
           .map((row, index) => {
-
             return (
               <TableRow
                 hover
@@ -171,7 +170,7 @@ export default function OverviewTable(props) {
                 <TableCell>{row.account}</TableCell>
                 <TableCell >{row.expName}</TableCell>
                 <TableCell >{row.description}</TableCell>
-                <TableCell >{row.category}</TableCell>
+                <TableCell >{props.categories[row.category] === undefined ? "Deleted" : props.categories[row.category].name}</TableCell>
                 <TableCell align="right">{parseFloat(row.amount).toFixed(2)}</TableCell>
 
               </TableRow>

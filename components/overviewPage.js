@@ -134,7 +134,7 @@ export default function OverviewPage(props) {
             date: expense.date,
             expName: expense.expName,
             description: expense.description,
-            category: props.categories[expense.category] === undefined ? "Deleted" : props.categories[expense.category].name,
+            category: expense.category,
             amount: expense.amount
           }
         }))
@@ -181,7 +181,7 @@ export default function OverviewPage(props) {
               date: expense.date,
               expName: expense.expName,
               description: expense.description,
-              category: props.categories[expense.category] === undefined? "Deleted" : props.categories[expense.category].name,
+              category: expense.category,
               amount: expense.amount
             }
           }
