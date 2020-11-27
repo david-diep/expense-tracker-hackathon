@@ -8,11 +8,12 @@ export default function Chip(props){
     <div style={{
       borderRadius: '45px',
       color:`${dark.includes(backgroundColor)?'white':'black'}`,
+      textAlign: 'center',
       display: 'inline-block',
       padding: '2px 8px',
       backgroundColor:`${backgroundColor}`,
       fontSize: `${title?'1.6rem':'1rem'}`,
-      fontWeight: `${title ? 'bold' : 'normal'}`
+      fontWeight: `${title ? 'bold' : 'normal'}`,
     }}>
       {text}
     </div>

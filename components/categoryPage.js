@@ -66,18 +66,18 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const colors = ['#000000', //black
-  '#808080', //gray
-  '#800000', //maroon
-  '#FF0000', //red
-  '#008000', //green
-  '#008080', //teal
-  '#800080', //purple
-  '#000080',	//navy
-  '#FF00FF', //magenta
-  '#FFFF00', //yellow
-  '#00FF00',	//limegreen
-  '#00FFFF',	//aqua
+const colors = ['black', //black
+  'gray', //gray
+  'maroon', //maroon
+  'red', //red
+  'green', //green
+  'teal', //teal
+  'purple', //purple
+  'navy',	//navy
+  'magenta', //magenta
+  'yellow', //yellow
+  'limegreen',	//limegreen
+  'aqua',	//aqua
   ]	//transparent
 
 export default function CategoryPage(props) {
@@ -101,7 +101,6 @@ export default function CategoryPage(props) {
     setCategoryModal(false)
     props.addCategory(categoryName, color);
     setCategoryName('');
-
   }
 
   const renderAddModal = () => {
@@ -182,7 +181,7 @@ export default function CategoryPage(props) {
   }
 
   const handleEditSubmit = () => {
-    props.editCategory(categoryName,editFocusId)
+    props.editCategory(categoryName,editFocusId, color)
     setCategoryModal(false)
     setCategoryName('');
   }

@@ -226,7 +226,6 @@ export default function OverviewPage(props) {
               return <MenuItem key={categoryId} value={props.categories[categoryId].id}>{props.categories[categoryId].name}</MenuItem>
             })}
 
-
             </Select>
         </FormControl>
       )

@@ -85,20 +85,16 @@ const useStyles = makeStyles((theme) => ({
     display:'flex',
     justifyContent:'center',
     paddingTop:'5%',
-    // flexGrow: 1,
     padding: theme.spacing(3),
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
-    // [theme.breakpoints.up('md')]: {
-    //   height: '100vh',
-    // },
     height: '100%',
     width:'100%',
     background: '#ADD8E6',
-    backgroundSize: 'cover',
+    backgroundSize: '800%',
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -136,7 +132,7 @@ export default function Index() {
     "1": [{ expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date(), category: 1, amount: 6.00 },
       { expenseId: 4, expName: "Movie", description: "Monsters Inc", date: new Date(), category: 2, amount: 4.99 },
       { expenseId: 8, expName: "Games", description: "Slay the Spire", date: new Date(), category: 2, amount: 9.00 },
-      { expenseId: 9, expName: "Games", description: "League of Legends", date: new Date(), category: 2, amount: 20.00 },
+      { expenseId: 9, expName: "Games", description: "League of Legends", date: new Date('10-30-20'), category: 2, amount: 20.00 },
     ],
     "2": [{ expenseId: 2, expName: "Dinner", description: "Steak", date: new Date(), category: 1, amount: 16.00 },
       { expenseId: 5, expName: "Rent", description: "October", date: new Date('10-01-20'), category: 4, amount: 850.00 },
@@ -264,9 +260,10 @@ export default function Index() {
 
   }
 
-  const editCategory = (name,id) => {
+  const editCategory = (name,id, color) => {
     setCategories(prevCategories => {
       prevCategories[id].name = name;
+      prevCategories[id].color = color;
       return { ...prevCategories };
     })
   }
@@ -281,6 +278,7 @@ export default function Index() {
   const getAccountName = (accId) => {
     return accounts[accId].accName;
   }
+
   const getAccountColor = (accId) => {
     return accounts[accId].color;
   }
