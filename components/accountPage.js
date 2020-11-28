@@ -16,19 +16,18 @@ import {
 import MomentUtils from '@date-io/moment';
 import Chip from './chip'
 
-const colors = ['#000000', //black
-  '#808080', //gray
-  '#800000', //maroon
-  '#FF0000', //red
-  '#008000', //green
-  '#008080', //teal
-  '#800080', //purple
-  '#000080',	//navy
-  '#FF00FF', //magenta
-  '#FFFF00', //yellow
-  '#00FF00',	//limegreen
-  '#00FFFF',	//aqua
-  '#FFFFFF00']	//transparent
+const colors = ['black', //black
+  'gray', //gray
+  'maroon', //maroon
+  'red', //red
+  'green', //green
+  'teal', //teal
+  'purple', //purple
+  'navy',	//navy
+  'magenta', //magenta
+  'yellow', //yellow
+  'limegreen',	//limegreen
+  'aqua',]	//aqua
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.up('sm')]: {
@@ -160,12 +159,11 @@ export default function AccountPage(props){
 
   useEffect(()=>{
     calculateTotal();
-
   }
   )
   useEffect(() => {
     setTitle(props.getAccountName(props.account.id));
-    //  setColor(props.getAccountColor(props.account.id))
+    setColor(props.getAccountColor(props.account.id))
     // console.log(props.getAccountColor(props.account.id))
     },[props.account])
 
@@ -442,14 +440,10 @@ export default function AccountPage(props){
               label="Color"
             >
               {colors.map((color, index) => {
-                if (color === '#FFFFFF00') {
-                  return <MenuItem key={index} value={color} >{'No Color'}</MenuItem>
-                }
-                if (color === '#000000') {
-                  return <MenuItem key={index} value={color} >{'Black'}</MenuItem>
-                }
+
                 return <MenuItem key={index} value={color} style={{ color: color }}>{color}</MenuItem>
               })}
+              <MenuItem key={'transparent'} value={'#FFFFFF00'} >{'No Color'}</MenuItem>
             </TextField>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
               <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Edit</Button>

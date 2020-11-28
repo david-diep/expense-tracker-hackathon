@@ -77,8 +77,8 @@ const colors = ['black', //black
   'magenta', //magenta
   'yellow', //yellow
   'limegreen',	//limegreen
-  'aqua',	//aqua
-  ]	//transparent
+  'aqua',]	//aqua
+  // '#FFFFFF00']	//transparent
 
 export default function CategoryPage(props) {
 
@@ -152,12 +152,7 @@ export default function CategoryPage(props) {
                 className={classes.modalItem}
                 label="Color"
               >
-
                 {colors.map((color,index) => {
-
-                  if (color === '#000000') {
-                    return <MenuItem key={index} value={color} >{'Black'}</MenuItem>
-                  }
                   return <MenuItem key={index} value={color} style={{color: color}}>{color}</MenuItem>
                 })}
                 <MenuItem key={'transparent'} value={'#FFFFFF00'} >{'No Color'}</MenuItem>
@@ -236,9 +231,7 @@ export default function CategoryPage(props) {
               >
 
                 {colors.map((color, index) => {
-                  if (color === '#000000') {
-                    return <MenuItem key={index} value={color} >{'Black'}</MenuItem>
-                  }
+
                   return <MenuItem key={index} value={color} style={{ color: color }}>{color}</MenuItem>
                 })}
                 <MenuItem key={'transparent'} value={'#FFFFFF00'} >{'No Color'}</MenuItem>

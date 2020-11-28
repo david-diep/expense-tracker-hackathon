@@ -3,7 +3,15 @@ import React from 'react'
 
 export default function Chip(props){
   const {text, backgroundColor,title} = props||'';
-  const dark = ['#000000', '#808080', '#800000', '#FF0000', '#008000', '#008080', '#800080','#000080']
+  const dark = ['black',
+    'gray',
+    'maroon',
+    'red',
+    'green',
+    'purple',
+    'navy',
+    'teal'
+  ]
   return(
     <div style={{
       borderRadius: '45px',
