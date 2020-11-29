@@ -132,15 +132,15 @@ export default function Index() {
     "1": [{ expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date(), category: 1, amount: 6.00 },
       { expenseId: 4, expName: "Movie", description: "Monsters Inc", date: new Date(), category: 2, amount: 4.99 },
       { expenseId: 8, expName: "Games", description: "Slay the Spire", date: new Date(), category: 2, amount: 9.00 },
-      { expenseId: 9, expName: "Games", description: "League of Legends", date: new Date('10-30-20'), category: 2, amount: 20.00 },
+      { expenseId: 9, expName: "Games", description: "League of Legends", date: new Date('10/30/20'), category: 2, amount: 20.00 },
     ],
     "2": [{ expenseId: 2, expName: "Dinner", description: "Steak", date: new Date(), category: 1, amount: 16.00 },
-      { expenseId: 5, expName: "Rent", description: "October", date: new Date('10-01-20'), category: 4, amount: 850.00 },
-      { expenseId: 10, expName: "Family", description: "Boba", date: new Date('10-10-20'), category: 6, amount: 7.00 }
+      { expenseId: 5, expName: "Rent", description: "October", date: new Date('10/01/20'), category: 4, amount: 850.00 },
+      { expenseId: 10, expName: "Family", description: "Boba", date: new Date('10/10/20'), category: 6, amount: 7.00 }
   ],
-    "3": [{ expenseId: 3, expName: "Internet", description: "TWC", date: new Date('11-01-20'), category: 4, amount: 64.99 },
-      { expenseId: 6, expName: "Road Trip", description: "Yosemite", date: new Date('11-05-20'), category: 5, amount: 405.41 },
-      { expenseId: 7, expName: "Winter Clothes", description: "Uniqlo", date: new Date('11-04-20'), category: 3, amount: 98.90 }
+    "3": [{ expenseId: 3, expName: "Internet", description: "TWC", date: new Date('11/01/20'), category: 4, amount: 64.99 },
+      { expenseId: 6, expName: "Road Trip", description: "Yosemite", date: new Date('11/05/20'), category: 5, amount: 405.41 },
+      { expenseId: 7, expName: "Winter Clothes", description: "Uniqlo", date: new Date('11/04/20'), category: 3, amount: 98.90 }
   ],
   })
 

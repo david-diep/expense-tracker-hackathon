@@ -39,7 +39,10 @@ const useStyles = makeStyles((theme) => ({
     root: {
       width: '98%',
       paddingTop: '30px'
-    }
+    },
+    tableContainer: {
+      maxHeight: "50vh",
+    },
   }
   ,
   title:{
@@ -51,7 +54,8 @@ const useStyles = makeStyles((theme) => ({
   },
   tableContainer:{
     marginTop:'15px',
-
+    maxHeight: "80vh",
+    overflow:"auto"
   },
   titleRow: {
     display:'flex',

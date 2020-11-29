@@ -93,12 +93,14 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     width: "100%",
     marginBottom: theme.spacing(2),
-    minHeight: '70vh',
-    // maxHeight: '85vh',
+    minHeight: '55vh',
   },
   [theme.breakpoints.up('md')]: {
     table: {
       minWidth: 750,
+    },
+    paper:{
+      minHeight: '65vh',
     }
   },
   overflow: {

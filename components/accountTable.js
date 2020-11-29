@@ -97,7 +97,6 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     marginBottom: theme.spacing(2),
     minHeight: '65vh',
-    // maxHeight: '75vh',
   },
   [theme.breakpoints.up('md')]: {
   table: {
