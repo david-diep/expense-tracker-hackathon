@@ -25,7 +25,7 @@ const colors = ['black', //black
   'purple', //purple
   'navy',	//navy
   'magenta', //magenta
-  'yellow', //yellow
+  'gold', //yellow
   'limegreen',	//limegreen
   'aqua',]	//aqua
 
@@ -100,7 +100,8 @@ export default function AccountPage(props){
   const [category, setCategory] = React.useState("")
   const [dateRange, setDateRange] = React.useState('day');
   const [date, setDate] = React.useState(new moment());
-  const [color, setColor] = React.useState(props.account.color)
+  const [color, setColor] = React.useState(props.account.color);
+  const [newTitle, setNewTitle] = React.useState(props.account.accName)
 
   const getRows = () => {
     let rows =[];
@@ -162,9 +163,12 @@ export default function AccountPage(props){
   }
   )
   useEffect(() => {
-    setTitle(props.getAccountName(props.account.id));
-    setColor(props.getAccountColor(props.account.id))
-    // console.log(props.getAccountColor(props.account.id))
+    // setTitle(props.getAccountName(props.account.id));
+    // setColor(props.getAccountColor(props.account.id))
+    // setNewTitle(props.getAccountName(props.account.id))
+    setTitle(props.account.accName);
+    setColor(props.account.color)
+    setNewTitle(props.account.accName)
     },[props.account])
 
   const calculateTotal = () => {
@@ -215,12 +219,10 @@ export default function AccountPage(props){
     setTotal(total);
   }
 
-
   const handleAccountEdit = () => {
-    props.editAccount(title,props.account.id, color);
+    props.editAccount(newTitle, props.account.id, color);
     setEditAccountModal(false);
   }
-
 
   const handleEditExpense = (expense) => {
     setEditFocus(expense);
@@ -415,8 +417,8 @@ export default function AccountPage(props){
                 shrink: true,
               }}
 
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
+              value={newTitle}
+              onChange={(event) => setNewTitle(event.target.value)}
 
               label="Account Name"></TextField>
             <TextField

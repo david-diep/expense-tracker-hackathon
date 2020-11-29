@@ -75,7 +75,7 @@ const colors = ['black', //black
   'purple', //purple
   'navy',	//navy
   'magenta', //magenta
-  'yellow', //yellow
+  'gold', //yellow
   'limegreen',	//limegreen
   'aqua',]	//aqua
   // '#FFFFFF00']	//transparent
@@ -87,7 +87,7 @@ export default function CategoryPage(props) {
   const [modalMode, setModalMode] = React.useState(false);
   const [categoryName, setCategoryName] = React.useState('')
   const [editFocusId, setEditFocusId] = React.useState()
-  const [color, setColor] = React.useState('#000000')
+  const [color, setColor] = React.useState('#FFFFFF00')
 
   const rows = Object.keys(props.categories).map((categoryId) => {
     return {

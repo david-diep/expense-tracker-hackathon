@@ -10,7 +10,8 @@ export default function Chip(props){
     'green',
     'purple',
     'navy',
-    'teal'
+    'teal',
+    'magenta'
   ]
   return(
     <div style={{
@@ -18,7 +19,7 @@ export default function Chip(props){
       color:`${dark.includes(backgroundColor)?'white':'black'}`,
       textAlign: 'center',
       display: 'inline-block',
-      padding: '2px 8px',
+      padding: '2px 10px',
       backgroundColor:`${backgroundColor}`,
       fontSize: `${title?'1.6rem':'1rem'}`,
       fontWeight: `${title ? 'bold' : 'normal'}`,

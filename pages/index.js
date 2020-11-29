@@ -275,20 +275,10 @@ export default function Index() {
     })
   }
 
-  const getAccountName = (accId) => {
-    return accounts[accId].accName;
-  }
-
-  const getAccountColor = (accId) => {
-    return accounts[accId].color;
-  }
-
   const renderMain = () => {
     if (view ==="account"){
      return  (
      <AccountPage
-      getAccountName={getAccountName}
-      getAccountColor={getAccountColor}
       account={focusTarget}
       expenses={expenses[focusTarget.id]}
       editAccount={editAccount}
