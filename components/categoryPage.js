@@ -66,19 +66,19 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const colors = ['#000000', //black
-  '#808080', //gray
-  '#800000', //maroon
-  '#FF0000', //red
-  '#008000', //green
-  '#008080', //teal
-  '#800080', //purple
-  '#000080',	//navy
-  '#FF00FF', //magenta
-  '#FFFF00', //yellow
-  '#00FF00',	//limegreen
-  '#00FFFF',	//aqua
-  ]	//transparent
+const colors = ['black', //black
+  'gray', //gray
+  'maroon', //maroon
+  'red', //red
+  'green', //green
+  'teal', //teal
+  'purple', //purple
+  'navy',	//navy
+  'magenta', //magenta
+  'gold', //yellow
+  'limegreen',	//limegreen
+  'aqua',]	//aqua
+  // '#FFFFFF00']	//transparent
 
 export default function CategoryPage(props) {
 
@@ -87,7 +87,7 @@ export default function CategoryPage(props) {
   const [modalMode, setModalMode] = React.useState(false);
   const [categoryName, setCategoryName] = React.useState('')
   const [editFocusId, setEditFocusId] = React.useState()
-  const [color, setColor] = React.useState('#000000')
+  const [color, setColor] = React.useState('#FFFFFF00')
 
   const rows = Object.keys(props.categories).map((categoryId) => {
     return {
@@ -101,7 +101,6 @@ export default function CategoryPage(props) {
     setCategoryModal(false)
     props.addCategory(categoryName, color);
     setCategoryName('');
-
   }
 
   const renderAddModal = () => {
@@ -153,12 +152,7 @@ export default function CategoryPage(props) {
                 className={classes.modalItem}
                 label="Color"
               >
-
                 {colors.map((color,index) => {
-
-                  if (color === '#000000') {
-                    return <MenuItem key={index} value={color} >{'Black'}</MenuItem>
-                  }
                   return <MenuItem key={index} value={color} style={{color: color}}>{color}</MenuItem>
                 })}
                 <MenuItem key={'transparent'} value={'#FFFFFF00'} >{'No Color'}</MenuItem>
@@ -182,7 +176,7 @@ export default function CategoryPage(props) {
   }
 
   const handleEditSubmit = () => {
-    props.editCategory(categoryName,editFocusId)
+    props.editCategory(categoryName,editFocusId, color)
     setCategoryModal(false)
     setCategoryName('');
   }
@@ -237,9 +231,7 @@ export default function CategoryPage(props) {
               >
 
                 {colors.map((color, index) => {
-                  if (color === '#000000') {
-                    return <MenuItem key={index} value={color} >{'Black'}</MenuItem>
-                  }
+
                   return <MenuItem key={index} value={color} style={{ color: color }}>{color}</MenuItem>
                 })}
                 <MenuItem key={'transparent'} value={'#FFFFFF00'} >{'No Color'}</MenuItem>

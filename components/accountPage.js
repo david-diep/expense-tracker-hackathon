@@ -16,19 +16,18 @@ import {
 import MomentUtils from '@date-io/moment';
 import Chip from './chip'
 
-const colors = ['#000000', //black
-  '#808080', //gray
-  '#800000', //maroon
-  '#FF0000', //red
-  '#008000', //green
-  '#008080', //teal
-  '#800080', //purple
-  '#000080',	//navy
-  '#FF00FF', //magenta
-  '#FFFF00', //yellow
-  '#00FF00',	//limegreen
-  '#00FFFF',	//aqua
-  '#FFFFFF00']	//transparent
+const colors = ['black', //black
+  'gray', //gray
+  'maroon', //maroon
+  'red', //red
+  'green', //green
+  'teal', //teal
+  'purple', //purple
+  'navy',	//navy
+  'magenta', //magenta
+  'gold', //yellow
+  'limegreen',	//limegreen
+  'aqua',]	//aqua
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.up('sm')]: {
@@ -40,7 +39,10 @@ const useStyles = makeStyles((theme) => ({
     root: {
       width: '98%',
       paddingTop: '30px'
-    }
+    },
+    tableContainer: {
+      maxHeight: "50vh",
+    },
   }
   ,
   title:{
@@ -52,7 +54,8 @@ const useStyles = makeStyles((theme) => ({
   },
   tableContainer:{
     marginTop:'15px',
-
+    maxHeight: "80vh",
+    overflow:"auto"
   },
   titleRow: {
     display:'flex',
@@ -101,7 +104,8 @@ export default function AccountPage(props){
   const [category, setCategory] = React.useState("")
   const [dateRange, setDateRange] = React.useState('day');
   const [date, setDate] = React.useState(new moment());
-  const [color, setColor] = React.useState(props.account.color)
+  const [color, setColor] = React.useState(props.account.color);
+  const [newTitle, setNewTitle] = React.useState(props.account.accName)
 
   const getRows = () => {
     let rows =[];
@@ -160,13 +164,15 @@ export default function AccountPage(props){
 
   useEffect(()=>{
     calculateTotal();
-
   }
   )
   useEffect(() => {
-    setTitle(props.getAccountName(props.account.id));
-    //  setColor(props.getAccountColor(props.account.id))
-    // console.log(props.getAccountColor(props.account.id))
+    // setTitle(props.getAccountName(props.account.id));
+    // setColor(props.getAccountColor(props.account.id))
+    // setNewTitle(props.getAccountName(props.account.id))
+    setTitle(props.account.accName);
+    setColor(props.account.color)
+    setNewTitle(props.account.accName)
     },[props.account])
 
   const calculateTotal = () => {
@@ -217,12 +223,10 @@ export default function AccountPage(props){
     setTotal(total);
   }
 
-
   const handleAccountEdit = () => {
-    props.editAccount(title,props.account.id, color);
+    props.editAccount(newTitle, props.account.id, color);
     setEditAccountModal(false);
   }
-
 
   const handleEditExpense = (expense) => {
     setEditFocus(expense);
@@ -417,8 +421,8 @@ export default function AccountPage(props){
                 shrink: true,
               }}
 
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
+              value={newTitle}
+              onChange={(event) => setNewTitle(event.target.value)}
 
               label="Account Name"></TextField>
             <TextField
@@ -442,14 +446,10 @@ export default function AccountPage(props){
               label="Color"
             >
               {colors.map((color, index) => {
-                if (color === '#FFFFFF00') {
-                  return <MenuItem key={index} value={color} >{'No Color'}</MenuItem>
-                }
-                if (color === '#000000') {
-                  return <MenuItem key={index} value={color} >{'Black'}</MenuItem>
-                }
+
                 return <MenuItem key={index} value={color} style={{ color: color }}>{color}</MenuItem>
               })}
+              <MenuItem key={'transparent'} value={'#FFFFFF00'} >{'No Color'}</MenuItem>
             </TextField>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
               <Button type="submit" style={{ background: '#228B22', marginLeft: '5px' }}>Edit</Button>

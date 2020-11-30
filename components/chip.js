@@ -3,16 +3,26 @@ import React from 'react'
 
 export default function Chip(props){
   const {text, backgroundColor,title} = props||'';
-  const dark = ['#000000', '#808080', '#800000', '#FF0000', '#008000', '#008080', '#800080','#000080']
+  const dark = ['black',
+    'gray',
+    'maroon',
+    'red',
+    'green',
+    'purple',
+    'navy',
+    'teal',
+    'magenta'
+  ]
   return(
     <div style={{
       borderRadius: '45px',
       color:`${dark.includes(backgroundColor)?'white':'black'}`,
+      textAlign: 'center',
       display: 'inline-block',
-      padding: '2px 8px',
+      padding: '2px 10px',
       backgroundColor:`${backgroundColor}`,
       fontSize: `${title?'1.6rem':'1rem'}`,
-      fontWeight: `${title ? 'bold' : 'normal'}`
+      fontWeight: `${title ? 'bold' : 'normal'}`,
     }}>
       {text}
     </div>

@@ -29,7 +29,10 @@ const useStyles = makeStyles((theme) => ({
       root: {
         width: '98%',
         paddingTop:'30px'
-      }
+      },
+      tableContainer: {
+        maxHeight: "50vh",
+      },
     }
   ,
   titleRow: {
@@ -38,7 +41,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center'
   },
   tableContainer: {
-    marginTop: '15px'
+    marginTop: '15px',
+    maxHeight: "80vh",
+    overflow: "auto"
   },
   formControl:{
     fontSize:'3rem'
@@ -225,7 +230,6 @@ export default function OverviewPage(props) {
             {Object.keys(props.categories).map((categoryId)=>{
               return <MenuItem key={categoryId} value={props.categories[categoryId].id}>{props.categories[categoryId].name}</MenuItem>
             })}
-
 
             </Select>
         </FormControl>

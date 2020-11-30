@@ -85,20 +85,16 @@ const useStyles = makeStyles((theme) => ({
     display:'flex',
     justifyContent:'center',
     paddingTop:'5%',
-    // flexGrow: 1,
     padding: theme.spacing(3),
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
-    // [theme.breakpoints.up('md')]: {
-    //   height: '100vh',
-    // },
     height: '100%',
     width:'100%',
     background: '#ADD8E6',
-    backgroundSize: 'cover',
+    backgroundSize: '800%',
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -128,23 +124,23 @@ export default function Index() {
   };
 
   const [accounts, setAccounts] = React.useState({
-    "1": { accName: "Default", id: 1, color: '#000080' },
-    "2": { accName: "Second", id: 2, color: '#FF0000'},
-    "3": { accName: "Third", id: 3, color: '#808080'},
+    "1": { accName: "Default", id: 1, color: 'navy' },
+    "2": { accName: "Second", id: 2, color: 'red'},
+    "3": { accName: "Third", id: 3, color: 'gray'},
     });
   const [expenses, setExpenses] = React.useState({
     "1": [{ expenseId: 1, expName: "Lunch", description: "McDonalds", date: new Date(), category: 1, amount: 6.00 },
       { expenseId: 4, expName: "Movie", description: "Monsters Inc", date: new Date(), category: 2, amount: 4.99 },
       { expenseId: 8, expName: "Games", description: "Slay the Spire", date: new Date(), category: 2, amount: 9.00 },
-      { expenseId: 9, expName: "Games", description: "League of Legends", date: new Date(), category: 2, amount: 20.00 },
+      { expenseId: 9, expName: "Games", description: "League of Legends", date: new Date('10/30/20'), category: 2, amount: 20.00 },
     ],
     "2": [{ expenseId: 2, expName: "Dinner", description: "Steak", date: new Date(), category: 1, amount: 16.00 },
-      { expenseId: 5, expName: "Rent", description: "October", date: new Date('10-01-20'), category: 4, amount: 850.00 },
-      { expenseId: 10, expName: "Family", description: "Boba", date: new Date('10-10-20'), category: 6, amount: 7.00 }
+      { expenseId: 5, expName: "Rent", description: "October", date: new Date('10/01/20'), category: 4, amount: 850.00 },
+      { expenseId: 10, expName: "Family", description: "Boba", date: new Date('10/10/20'), category: 6, amount: 7.00 }
   ],
-    "3": [{ expenseId: 3, expName: "Internet", description: "TWC", date: new Date('11-01-20'), category: 4, amount: 64.99 },
-      { expenseId: 6, expName: "Road Trip", description: "Yosemite", date: new Date('11-05-20'), category: 5, amount: 405.41 },
-      { expenseId: 7, expName: "Winter Clothes", description: "Uniqlo", date: new Date('11-04-20'), category: 3, amount: 98.90 }
+    "3": [{ expenseId: 3, expName: "Internet", description: "TWC", date: new Date('11/01/20'), category: 4, amount: 64.99 },
+      { expenseId: 6, expName: "Road Trip", description: "Yosemite", date: new Date('11/05/20'), category: 5, amount: 405.41 },
+      { expenseId: 7, expName: "Winter Clothes", description: "Uniqlo", date: new Date('11/04/20'), category: 3, amount: 98.90 }
   ],
   })
 
@@ -154,12 +150,12 @@ export default function Index() {
   const [focusTarget, setFocusTarget] = React.useState(null);
   const [categories, setCategories] = React.useState(
     {
-      "1": { name: "Food", id: 1, color:'#008000'},
-      "2": { name: "Entertainment", id: 2, color: '#800000' },
-      "3": { name: "Clothing", id: 3, color: '#00FF00'},
-      "4": { name: "Bills", id: 4, color: '#00FFFF'},
-      "5": { name: "Travel", id: 5, color: '#808080'},
-      "6": { name: "Other", id: 6, color: '#000000' },
+      "1": { name: "Food", id: 1, color:'green'},
+      "2": { name: "Entertainment", id: 2, color: 'maroon' },
+      "3": { name: "Clothing", id: 3, color: 'limegreen'},
+      "4": { name: "Bills", id: 4, color: 'magenta'},
+      "5": { name: "Travel", id: 5, color: 'aqua'},
+      "6": { name: "Other", id: 6, color: 'purple' },
     })
   const [newCategoryId, setNewCategoryId] = React.useState(7)
 
@@ -197,7 +193,7 @@ export default function Index() {
 
   const addAccount = () => {
     setAccounts(prevAccounts => {
-      prevAccounts[newAccId] = { accName: "New Account", id: newAccId, color:'#FFFFFF'}
+      prevAccounts[newAccId] = { accName: "New Account", id: newAccId, color:'#FFFFFF00'}
       return {...prevAccounts};
   })
     setExpenses(prevExpenses => {
@@ -264,9 +260,10 @@ export default function Index() {
 
   }
 
-  const editCategory = (name,id) => {
+  const editCategory = (name,id, color) => {
     setCategories(prevCategories => {
       prevCategories[id].name = name;
+      prevCategories[id].color = color;
       return { ...prevCategories };
     })
   }
@@ -278,19 +275,10 @@ export default function Index() {
     })
   }
 
-  const getAccountName = (accId) => {
-    return accounts[accId].accName;
-  }
-  const getAccountColor = (accId) => {
-    return accounts[accId].color;
-  }
-
   const renderMain = () => {
     if (view ==="account"){
      return  (
      <AccountPage
-      getAccountName={getAccountName}
-      getAccountColor={getAccountColor}
       account={focusTarget}
       expenses={expenses[focusTarget.id]}
       editAccount={editAccount}
