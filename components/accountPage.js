@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: '30px'
     },
     tableContainer: {
-      maxHeight: "50vh",
+      maxHeight: "55vh",
     },
   }
   ,
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   },
   tableContainer:{
     marginTop:'15px',
-    maxHeight: "80vh",
+    maxHeight: "70vh",
     overflow:"auto"
   },
   titleRow: {
